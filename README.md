@@ -17,7 +17,7 @@ Edu_Agent/
 ├── run_pipeline.py              # 主入口（一键运行）
 ├── pyproject.toml               # 项目依赖配置
 ├── .env.example                 # 环境变量模板
-├── .env                         # API Key 配置（不提交 git）
+├── .env                         # API Key 配置（若上传不要提交 git）
 ├── .gitignore                   # Git 忽略配置
 │
 ├── LLM/                         # LLM 调用层
