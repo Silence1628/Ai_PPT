@@ -1,0 +1,605 @@
+{
+  "presentation": {
+    "width": 12192000,
+    "height": 6858000
+  },
+  "pages": [
+    {
+      "name": "cover",
+      "shapes": [
+        {
+          "name": "文本框 34",
+          "type": "文本",
+          "left": 1386000,
+          "top": 2401200,
+          "width": "auto",
+          "height": "auto",
+          "text": "第{{text:task_num}}章 {{text:task_name}}",
+          "font": {
+            "name": "Arial",
+            "size": 32,
+            "bold": true,
+            "color": "000000"
+          },
+          "alignment": "center"
+        },
+        {
+          "name": "文本框 1",
+          "type": "文本",
+          "left": 4981800,
+          "top": 4622400,
+          "width": "auto",
+          "height": "auto",
+          "text": "{{text:project_name}}",
+          "font": {
+            "name": "Kaiti SC Bold",
+            "size": 18,
+            "bold": true,
+            "color": "FFFFFF"
+          },
+          "alignment": "center"
+        }
+      ]
+    },
+    {
+      "name": "introduction",
+      "shapes": [
+        {
+          "name": "文本框 2",
+          "type": "文本",
+          "left": 388800,
+          "top": 1929600,
+          "width": 6534000,
+          "height": 3416400,
+          "text": "{{text:introduction_case}}",
+          "font": {
+            "name": "微软雅黑",
+            "size": 18,
+            "bold": false,
+            "color": "000000"
+          },
+          "alignment": "left",
+          "first_line_indent": 2,
+          "line_spacing": 1.5
+        }
+      ]
+    },
+    {
+      "name": "thinking",
+      "shapes": [
+        {
+          "name": "文本框 11",
+          "type": "文本",
+          "left": 3535200,
+          "top": 1270800,
+          "width": 8035200,
+          "height": 1476000,
+          "text": "{{text:guiding_problem1}}\n{{text:guiding_problem2}}\n{{text:guiding_problem3}}",
+          "font": {
+            "name": "微软雅黑",
+            "size": 20,
+            "bold": false,
+            "color": "000000"
+          },
+          "alignment": "left",
+          "line_spacing": 1.5
+        }
+      ]
+    },
+    {
+      "name": "start",
+      "shapes": [
+        {
+          "name": "文本框 39",
+          "type": "文本",
+          "left": 644400,
+          "top": 3124800,
+          "width": "auto",
+          "height": "auto",
+          "text": "{{text:task_name}}",
+          "font": {
+            "name": "微软雅黑",
+            "size": 40,
+            "bold": true,
+            "color": "000000"
+          },
+          "alignment": "center"
+        },
+        {
+          "name": "文本框 61",
+          "type": "文本",
+          "left": 640800,
+          "top": 658800,
+          "width": "auto",
+          "height": "auto",
+          "text": "任务{{text:task_num}}",
+          "font": {
+            "name": "微软雅黑",
+            "size": 40,
+            "bold": true,
+            "color": "000000"
+          },
+          "alignment": "left"
+        }
+      ]
+    },
+    {
+      "name": "catalog_one",
+      "shapes": [
+        {
+          "name": "文本框 6",
+          "type": "文本",
+          "left": 208800,
+          "top": 946800,
+          "width": "auto",
+          "height": "auto",
+          "text": "任务{{text:task_num}}    {{text:task_name}}",
+          "font": {
+            "name": "微软雅黑",
+            "size": 40,
+            "bold": true,
+            "color": "000000"
+          },
+          "alignment": "center"
+        }
+      ]
+    },
+    {
+      "name": "description",
+      "shapes": [
+        {
+          "name": "文本框 17",
+          "type": "文本",
+          "left": 3006000,
+          "top": 1357200,
+          "width": 8280000,
+          "height": 1742400,
+          "text": "{{text:task_description}}",
+          "font": {
+            "name": "微软雅黑",
+            "size": 18,
+            "bold": false,
+            "color": "000000"
+          }
+        },
+        {
+          "name": "文本框 3",
+          "type": "文本",
+          "left": 3006000,
+          "top": 3567430,
+          "width": 8280000,
+          "height": 468630,
+          "text": "{{text:task_requirements1}}",
+          "font": {
+            "name": "微软雅黑",
+            "size": 18,
+            "bold": false,
+            "color": "000000"
+          }
+        },
+        {
+          "name": "文本框 13",
+          "type": "文本",
+          "left": 3006000,
+          "top": 4036060,
+          "width": 8280000,
+          "height": 468630,
+          "text": "{{text:task_requirements2}}",
+          "optional": true,
+          "font": {
+            "name": "微软雅黑",
+            "size": 18,
+            "bold": false,
+            "color": "000000"
+          }
+        },
+        {
+          "name": "文本框 14",
+          "type": "文本",
+          "left": 3006000,
+          "top": 4503600,
+          "width": 8280000,
+          "height": 468630,
+          "text": "{{text:task_requirements3}}",
+          "optional": true,
+          "font": {
+            "name": "微软雅黑",
+            "size": 18,
+            "bold": false,
+            "color": "000000"
+          }
+        },
+        {
+          "name": "文本框 15",
+          "type": "文本",
+          "left": 3006000,
+          "top": 4971600,
+          "width": 8280000,
+          "height": 468630,
+          "text": "{{text:task_requirements4}}",
+          "optional": true,
+          "font": {
+            "name": "微软雅黑",
+            "size": 18,
+            "bold": false,
+            "color": "000000"
+          }
+        },
+        {
+          "name": "文本框 16",
+          "type": "文本",
+          "left": 3006000,
+          "top": 5439600,
+          "width": 8280000,
+          "height": 468630,
+          "text": "{{text:task_requirements5}}",
+          "optional": true,
+          "font": {
+            "name": "微软雅黑",
+            "size": 18,
+            "bold": false,
+            "color": "000000"
+          }
+        }
+      ]
+    },
+    {
+      "name": "catalog_two",
+      "shapes": [
+        {
+          "name": "文本框 10",
+          "type": "文本",
+          "left": 208800,
+          "top": 946800,
+          "width": "auto",
+          "height": "auto",
+          "text": "任务{{text:task_num}}    {{text:task_name}}",
+          "font": {
+            "name": "微软雅黑",
+            "size": 40,
+            "bold": true,
+            "color": "000000"
+          },
+          "alignment": "center"
+        }
+      ]
+    },
+    {
+      "name": "target",
+      "shapes": [
+        {
+          "name": "文本框 1",
+          "type": "文本",
+          "left": 4850400,
+          "top": 2034000,
+          "width": 6883200,
+          "height": 468630,
+          "text": "{{text:task_target1}}",
+          "font": {
+            "name": "Arial",
+            "size": 18,
+            "bold": false,
+            "color": "000000"
+          }
+        },
+        {
+          "name": "文本框 3",
+          "type": "文本",
+          "left": 4850400,
+          "top": 2502000,
+          "width": 6883200,
+          "height": 468630,
+          "text": "{{text:task_target2}}",
+          "font": {
+            "name": "Arial",
+            "size": 18,
+            "bold": false,
+            "color": "000000"
+          }
+        },
+        {
+          "name": "文本框 2",
+          "type": "文本",
+          "left": 4850400,
+          "top": 2970000,
+          "width": 6883200,
+          "height": 468630,
+          "text": "{{text:task_target3}}",
+          "font": {
+            "name": "Arial",
+            "size": 18,
+            "bold": false,
+            "color": "000000"
+          }
+        },
+        {
+          "name": "文本框 16",
+          "type": "文本",
+          "left": 4850400,
+          "top": 3438000,
+          "width": 6883200,
+          "height": 468630,
+          "text": "{{text:task_target4}}",
+          "font": {
+            "name": "Arial",
+            "size": 18,
+            "bold": false,
+            "color": "000000"
+          }
+        },
+        {
+          "name": "文本框 18",
+          "type": "文本",
+          "left": 4848495,
+          "top": 4374000,
+          "width": 6883200,
+          "height": 468630,
+          "text": "重点：{{text:task_focus}}",
+          "font": {
+            "name": "Arial",
+            "size": 18,
+            "bold": false,
+            "color": "000000"
+          }
+        },
+        {
+          "name": "文本框 27",
+          "type": "文本",
+          "left": 4850400,
+          "top": 4842000,
+          "width": 6883200,
+          "height": 468630,
+          "text": "难点：{{text:task_difficulty}}",
+          "font": {
+            "name": "Arial",
+            "size": 18,
+            "bold": false,
+            "color": "000000"
+          }
+        }
+      ]
+    },
+    {
+      "name": "catalog_three",
+      "shapes": [
+        {
+          "name": "文本框 10",
+          "type": "文本",
+          "left": 208800,
+          "top": 946800,
+          "width": "auto",
+          "height": "auto",
+          "text": "任务{{text:task_num}}    {{text:task_name}}",
+          "font": {
+            "name": "微软雅黑",
+            "size": 40,
+            "bold": true,
+            "color": "000000"
+          },
+          "alignment": "center"
+        }
+      ]
+    },
+    {
+      "name": "knowledge_reserve",
+      "shapes": []
+    },
+    {
+      "name": "catalog_four",
+      "shapes": [
+        {
+          "name": "文本框 10",
+          "type": "文本",
+          "left": 208800,
+          "top": 946800,
+          "width": "auto",
+          "height": "auto",
+          "text": "任务{{text:task_num}}    {{text:task_name}}",
+          "font": {
+            "name": "微软雅黑",
+            "size": 40,
+            "bold": true,
+            "color": "000000"
+          },
+          "alignment": "center"
+        }
+      ]
+    },
+    {
+      "name": "task_implementation",
+      "shapes": []
+    },
+    {
+      "name": "catalog_five",
+      "shapes": [
+        {
+          "name": "文本框 10",
+          "type": "文本",
+          "left": 208800,
+          "top": 946800,
+          "width": "auto",
+          "height": "auto",
+          "text": "任务{{text:task_num}}    {{text:task_name}}",
+          "font": {
+            "name": "微软雅黑",
+            "size": 40,
+            "bold": true,
+            "color": "000000"
+          },
+          "alignment": "center"
+        }
+      ]
+    },
+    {
+      "name": "summary",
+      "shapes": [
+        {
+          "name": "文本框 2",
+          "type": "文本",
+          "left": 1850400,
+          "top": 1375200,
+          "width": 8823600,
+          "height": 1753200,
+          "text": "{{text:task_summary}}",
+          "font": {
+            "name": "Arial",
+            "size": 18,
+            "bold": false,
+            "color": "000000"
+          }
+        }
+      ]
+    },
+    {
+      "name": "key_difficulties_summary",
+      "shapes": [
+        {
+          "name": "矩形 3",
+          "type": "文本",
+          "left": 3250000,
+          "top": 8760000,
+          "width": 14000000,
+          "height": 1500000,
+          "text": "{{text:key_summary1}}",
+          "font": {
+            "name": "Arial",
+            "size": 20,
+            "bold": false,
+            "color": "000000"
+          }
+        },
+        {
+          "name": "矩形 1",
+          "type": "文本",
+          "left": 3250000,
+          "top": 10260000,
+          "width": 14000000,
+          "height": 1500000,
+          "text": "{{text:key_summary2}}",
+          "font": {
+            "name": "Arial",
+            "size": 20,
+            "bold": false,
+            "color": "000000"
+          }
+        },
+        {
+          "name": "矩形 4",
+          "type": "文本",
+          "left": 3250000,
+          "top": 11760000,
+          "width": 14000000,
+          "height": 1500000,
+          "text": "{{text:key_summary3}}",
+          "font": {
+            "name": "Arial",
+            "size": 20,
+            "bold": false,
+            "color": "000000"
+          }
+        },
+        {
+          "name": "矩形 10",
+          "type": "文本",
+          "left": 6512400,
+          "top": 8760000,
+          "width": 14000000,
+          "height": 1500000,
+          "text": "{{text:difficulties_summary1}}",
+          "font": {
+            "name": "Arial",
+            "size": 20,
+            "bold": false,
+            "color": "000000"
+          }
+        },
+        {
+          "name": "矩形 5",
+          "type": "文本",
+          "left": 6804000,
+          "top": 10260000,
+          "width": 14000000,
+          "height": 1500000,
+          "text": "{{text:difficulties_summary2}}",
+          "font": {
+            "name": "Arial",
+            "size": 20,
+            "bold": false,
+            "color": "000000"
+          }
+        },
+        {
+          "name": "矩形 6",
+          "type": "文本",
+          "left": 6512400,
+          "top": 11760000,
+          "width": 14000000,
+          "height": 1500000,
+          "text": "{{text:difficulties_summary3}}",
+          "font": {
+            "name": "Arial",
+            "size": 20,
+            "bold": false,
+            "color": "000000"
+          }
+        }
+      ]
+    },
+    {
+      "name": "catalog_six",
+      "shapes": [
+        {
+          "name": "文本框 10",
+          "type": "文本",
+          "left": 208800,
+          "top": 946800,
+          "width": "auto",
+          "height": "auto",
+          "text": "任务{{text:task_num}}    {{text:task_name}}",
+          "font": {
+            "name": "微软雅黑",
+            "size": 40,
+            "bold": true,
+            "color": "000000"
+          },
+          "alignment": "center"
+        }
+      ]
+    },
+    {
+      "name": "expansion",
+      "shapes": [
+        {
+          "name": "矩形 4",
+          "type": "文本",
+          "left": 1652400,
+          "top": 1375200,
+          "width": 7480800,
+          "height": 2311200,
+          "text": "{{text:skill_practice}}",
+          "font": {
+            "name": "微软雅黑",
+            "size": 20,
+            "bold": false,
+            "color": "000000"
+          }
+        },
+        {
+          "name": "文本框 12",
+          "type": "文本",
+          "left": 3348000,
+          "top": 3924000,
+          "width": 5788800,
+          "height": 2376000,
+          "text": "{{text:solving_ideas}}",
+          "font": {
+            "name": "微软雅黑",
+            "size": 20,
+            "bold": false,
+            "color": "000000"
+          }
+        }
+      ]
+    }
+  ]
+}

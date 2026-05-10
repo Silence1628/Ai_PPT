@@ -1,0 +1,63 @@
+# Environment
+.env
+.env.local
+*.env
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+env/
+env.bak/
+venv.bak/
+.venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project specific
+Word_Chunks/json_output/
+PPT_Framework/ppt_output/
+Word_Chunks/__pycache__/
+Word_Chunks/checker/__pycache__/
+Word_Chunks/processor/__pycache__/
+LLM/__pycache__/
+PPT_Framework/__pycache__/
+PPT_Framework/renderer/__pycache__/
+PPT_Framework/schemas/__pycache__/
+
+# Claude Code
+.claude/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
