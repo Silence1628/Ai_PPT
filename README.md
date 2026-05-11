@@ -74,7 +74,7 @@ pip install python-docx python-dotenv openai pydantic
 
 ### 2. 准备 Word 文件
 
-将 `.docx` 文件放入 `Word_Chunks/example/` 目录，程序会自动识别。
+将 `.docx` 文件放入 `Word_Chunks/word_input/` 目录，程序会自动识别。
 
 ### 3. 运行
 
@@ -152,13 +152,13 @@ renderer.render(data, "output.pptx")
 - [ ] Python >= 3.10 已安装
 - [ ] 虚拟环境已创建并激活
 - [ ] `.env` 文件已创建，填入有效的 `OPENAI_API_KEY`
-- [ ] Word 文件已放入 `Word_Chunks/example/` 目录
+- [ ] Word 文件已放入 `Word_Chunks/word_input/` 目录
 - [ ] WPS 或 PowerPoint 已安装（用于 PPT 渲染）
 
 ## 常见问题
 
 **Q: 运行报错 "找不到 Word 文件"**
-A: 确保 `Word_Chunks/example/` 目录中有 `.docx` 或 `.doc` 文件，且只有一个
+A: 确保 `Word_Chunks/word_input/` 目录中有 `.docx` 或 `.doc` 文件，且只有一个
 
 **Q: Checker 阶段报错 "LLM 输出无法解析"**
 A: LLM 返回格式可能异常，程序会自动保留原字段继续执行

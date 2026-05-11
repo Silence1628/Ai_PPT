@@ -60,8 +60,8 @@ def run_word_to_json():
     print("=" * 70)
 
     # 自动识别 Word 文件
-    word_example_dir = PROJECT_ROOT / "Word_Chunks" / "example"
-    WORD_DOC_PATH = find_word_document(word_example_dir)
+    word_input_dir = PROJECT_ROOT / "Word_Chunks" / "word_input"
+    WORD_DOC_PATH = find_word_document(word_input_dir)
     print(f"[INFO] 自动识别到 Word 文件: {WORD_DOC_PATH.name}")
 
     # 1.1 切割
