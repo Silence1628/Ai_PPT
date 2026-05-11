@@ -11,6 +11,7 @@ import argparse
 import json
 import sys
 import signal
+import time
 from pathlib import Path
 
 # 确保项目根目录在 sys.path 中（可导入 LLM, Word_Chunks, PPT_Framework）
@@ -30,24 +31,42 @@ from PPT_Framework.renderer import PPTRenderer
 # =============================================================================
 # 路径配置
 # =============================================================================
+WORD_INPUT_DIR = PROJECT_ROOT / "word_input"
 WORD_OUTPUT_DIR = PROJECT_ROOT / "Word_Chunks" / "json_output"
 PPT_TEMPLATE = PROJECT_ROOT / "PPT_Framework" / "templates" / "template.pptx"
 PPT_SCHEMA = PROJECT_ROOT / "PPT_Framework" / "templates" / "template_schema.json"
-PPT_OUTPUT_DIR = PROJECT_ROOT / "PPT_Framework" / "ppt_output"
+PPT_OUTPUT_DIR = PROJECT_ROOT / "ppt_output"
 
 
-def find_word_document(example_dir: Path) -> Path:
-    """自动识别 example 目录中的 Word 文档"""
-    docx_files = list(example_dir.glob("*.docx")) + list(example_dir.glob("*.doc"))
+def select_word_document(input_dir: Path) -> Path:
+    """显示选择菜单，让用户选择要处理的 Word 文档"""
+    docx_files = list(input_dir.glob("*.docx")) + list(input_dir.glob("*.doc"))
     if not docx_files:
         raise FileNotFoundError(
-            f"未找到 Word 文件，请将 .docx 或 .doc 文件放入 {example_dir}"
+            f"未找到 Word 文件，请将 .docx 或 .doc 文件放入 {input_dir}"
         )
-    if len(docx_files) > 1:
-        raise ValueError(
-            f"找到多个 Word 文件，请只保留一个: {[f.name for f in docx_files]}"
-        )
-    return docx_files[0]
+    if len(docx_files) == 1:
+        return docx_files[0]
+
+    print("\n" + "=" * 50)
+    print("检测到多个 Word 文件，请选择要处理的文件：")
+    print("=" * 50)
+    for i, f in enumerate(docx_files, 1):
+        print(f"  [{i}] {f.name}")
+    print(f"  [0] 退出")
+    print("=" * 50)
+
+    while True:
+        try:
+            choice = input("请输入序号 (0-{}): ".format(len(docx_files)))
+            idx = int(choice)
+            if idx == 0:
+                sys.exit(0)
+            if 1 <= idx <= len(docx_files):
+                return docx_files[idx - 1]
+            print("无效选择，请重试")
+        except ValueError:
+            print("请输入数字")
 
 
 # =============================================================================
@@ -60,8 +79,7 @@ def run_word_to_json():
     print("=" * 70)
 
     # 自动识别 Word 文件
-    word_input_dir = PROJECT_ROOT / "Word_Chunks" / "word_input"
-    WORD_DOC_PATH = find_word_document(word_input_dir)
+    WORD_DOC_PATH = select_word_document(WORD_INPUT_DIR)
     print(f"[INFO] 自动识别到 Word 文件: {WORD_DOC_PATH.name}")
 
     # 1.1 切割
@@ -112,27 +130,37 @@ def run_json_to_ppt():
     # 确保输出目录存在
     PPT_OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
-    # Clean up stale PPT files so each run only has task count files
-    for f in PPT_OUTPUT_DIR.glob("*.pptx"):
-        f.unlink()
-
     print(f"找到 {len(task_jsons)} 个 task JSON，开始渲染...\n")
 
     # 依次渲染（顺序执行，不并发 — COM 单线程 apartment）
+    MAX_RENDER_RETRIES = 3
+    RETRY_DELAY = 5  # seconds
+
     for i, json_path in enumerate(task_jsons, 1):
         print(f"[{i}/{len(task_jsons)}] 正在渲染: {json_path.name}")
 
-        with open(json_path, 'r', encoding='utf-8') as f:
-            data = json.load(f)
+        for attempt in range(MAX_RENDER_RETRIES):
+            try:
+                with open(json_path, 'r', encoding='utf-8') as f:
+                    data = json.load(f)
 
-        renderer = PPTRenderer(
-            template_path=str(PPT_TEMPLATE),
-            schema_path=str(PPT_SCHEMA)
-        )
+                renderer = PPTRenderer(
+                    template_path=str(PPT_TEMPLATE),
+                    schema_path=str(PPT_SCHEMA)
+                )
 
-        output_path = PPT_OUTPUT_DIR / f"{json_path.stem}.pptx"
-        renderer.render(data, str(output_path))
-        print(f"      [OK] 完成: {output_path.name}\n")
+                output_path = PPT_OUTPUT_DIR / f"{json_path.stem}.pptx"
+                renderer.render(data, str(output_path))
+                print(f"      [OK] 完成: {output_path.name}\n")
+                break
+            except Exception as e:
+                if attempt < MAX_RENDER_RETRIES - 1:
+                    print(f"      [WARN] 渲染失败 ({attempt+1}/{MAX_RENDER_RETRIES}): {e}")
+                    print(f"      [INFO] {RETRY_DELAY}秒后重试...")
+                    time.sleep(RETRY_DELAY)
+                else:
+                    print(f"      [ERROR] 渲染失败，已重试 {MAX_RENDER_RETRIES} 次: {e}")
+                    break
 
     print(f"=" * 70)
     print(f"完成！共输出 {len(task_jsons)} 个 PPT")

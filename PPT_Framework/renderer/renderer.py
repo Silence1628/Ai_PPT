@@ -30,8 +30,14 @@ class PPTRenderer:
             self.ppt_app = win32com.client.Dispatch("WPP.Application")
         except Exception:
             self.ppt_app = win32com.client.Dispatch("PowerPoint.Application")
-        self.ppt_app.Visible = 1
-        self.ppt_app.DisplayAlerts = 0
+        try:
+            self.ppt_app.Visible = 1
+        except Exception:
+            pass
+        try:
+            self.ppt_app.DisplayAlerts = 0
+        except Exception:
+            pass
 
     def _open_presentation(self):
         self.ppt_presentation = self.ppt_app.Presentations.Open(
@@ -43,36 +49,38 @@ class PPTRenderer:
 
     def render(self, data: Dict[str, Any], output_path: str):
         """根据data渲染PPT并保存"""
-        self._start_ppt()
-        self._open_presentation()
+        try:
+            self._start_ppt()
+            self._open_presentation()
 
-        for page_index, page in enumerate(self.schema.get('pages', [])):
-            self._render_page(page, data, page_index)
+            for page_index, page in enumerate(self.schema.get('pages', [])):
+                self._render_page(page, data, page_index)
 
-        # 从data中获取task_num和task_name，用于构造输出文件名
-        chinese_to_arabic = {'一': '1', '二': '2', '三': '3', '四': '4', '五': '5', '六': '6', '七': '7', '八': '8', '九': '9', '十': '10'}
-        task_num = None
-        task_name = None
-        for page_data in data.values():
-            if isinstance(page_data, dict):
-                if task_num is None and 'task_num' in page_data:
-                    raw_num = str(page_data['task_num'])
-                    task_num = chinese_to_arabic.get(raw_num, raw_num)
-                if task_name is None and 'task_name' in page_data:
-                    task_name = page_data['task_name']
-                if task_num and task_name:
-                    break
+            # 从data中获取task_num和task_name，用于构造输出文件名
+            chinese_to_arabic = {'一': '1', '二': '2', '三': '3', '四': '4', '五': '5', '六': '6', '七': '7', '八': '8', '九': '9', '十': '10'}
+            task_num = None
+            task_name = None
+            for page_data in data.values():
+                if isinstance(page_data, dict):
+                    if task_num is None and 'task_num' in page_data:
+                        raw_num = str(page_data['task_num'])
+                        task_num = chinese_to_arabic.get(raw_num, raw_num)
+                    if task_name is None and 'task_name' in page_data:
+                        task_name = page_data['task_name']
+                    if task_num and task_name:
+                        break
 
-        # 构造输出文件名: 1.task_num_task_name.pptx
-        if task_num and task_name:
-            safe_task_name = re.sub(r'[<>:"/\\|?*]', '_', task_name)
-            output_filename = f"1.{task_num}_{safe_task_name}.pptx"
-            output_path = str(Path(output_path).parent / output_filename)
+            # 构造输出文件名: 1.task_num_task_name.pptx
+            if task_num and task_name:
+                safe_task_name = re.sub(r'[<>:"/\\|?*]', '_', task_name)
+                output_filename = f"1.{task_num}_{safe_task_name}.pptx"
+                output_path = str(Path(output_path).parent / output_filename)
 
-        output = Path(output_path)
-        output.parent.mkdir(parents=True, exist_ok=True)
-        self.ppt_presentation.SaveAs(str(output.absolute()))
-        self._close()
+            output = Path(output_path)
+            output.parent.mkdir(parents=True, exist_ok=True)
+            self.ppt_presentation.SaveAs(str(output.absolute()))
+        finally:
+            self._close()
 
     def _render_page(self, page: dict, data: Dict[str, Any], page_index: int):
         if page_index >= self.ppt_presentation.Slides.Count:

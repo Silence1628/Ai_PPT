@@ -39,16 +39,17 @@ Edu_Agent/
 │   │   ├── validator.py
 │   │   ├── corrector.py
 │   │   └── FIELD_CONSTRAINTS.py
-│   ├── example/                  # Word 源文件目录
 │   └── json_output/              # JSON 输出目录
 │
-└── PPT_Framework/               # PPT 生成模块
-    ├── __init__.py
-    ├── examples/                 # 示例数据
-    ├── ppt_output/              # PPT 输出目录
-    ├── renderer/                 # PPT 渲染器
-    ├── schemas/                  # PPT 数据模型
-    └── templates/               # PPT 模板
+├── PPT_Framework/               # PPT 生成模块
+│   ├── __init__.py
+│   ├── examples/                 # 示例数据
+│   ├── renderer/                 # PPT 渲染器
+│   ├── schemas/                  # PPT 数据模型
+│   └── templates/               # PPT 模板
+│
+├── word_input/                   # Word 源文件目录
+└── ppt_output/                   # PPT 输出目录
 ```
 
 ## 快速开始
@@ -69,12 +70,12 @@ venv\Scripts\activate  # Windows
 
 pip install -e .
 # 或直接安装依赖
-pip install python-docx python-dotenv openai pydantic
+pip install python-docx python-dotenv openai pydantic pywin32
 ```
 
 ### 2. 准备 Word 文件
 
-将 `.docx` 文件放入 `Word_Chunks/word_input/` 目录，程序会自动识别。
+将 `.docx` 文件放入 `word_input/` 目录，程序会自动识别。
 
 ### 3. 运行
 
@@ -146,19 +147,20 @@ renderer.render(data, "output.pptx")
 | python-dotenv | >=1.0.0 | 环境变量加载 |
 | openai | >=1.0.0 | MiniMax API 调用 |
 | pydantic | >=2.0.0 | 数据验证 |
+| pywin32 | >=300.0 | Windows COM 自动化（PPT 渲染） |
 
 ## 部署检查清单
 
 - [ ] Python >= 3.10 已安装
 - [ ] 虚拟环境已创建并激活
 - [ ] `.env` 文件已创建，填入有效的 `OPENAI_API_KEY`
-- [ ] Word 文件已放入 `Word_Chunks/word_input/` 目录
+- [ ] Word 文件已放入 `word_input/` 目录
 - [ ] WPS 或 PowerPoint 已安装（用于 PPT 渲染）
 
 ## 常见问题
 
 **Q: 运行报错 "找不到 Word 文件"**
-A: 确保 `Word_Chunks/word_input/` 目录中有 `.docx` 或 `.doc` 文件，且只有一个
+A: 确保 `word_input/` 目录中有 `.docx` 或 `.doc` 文件，且只有一个
 
 **Q: Checker 阶段报错 "LLM 输出无法解析"**
 A: LLM 返回格式可能异常，程序会自动保留原字段继续执行
