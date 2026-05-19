@@ -1,0 +1,145 @@
+{
+  "template_name": "knowledge_schema",
+  "pages": [
+    {
+      "index": 1,
+      "name": "knowledge_content_1",
+      "content_textbox": {
+        "name": "文本块_11",
+        "height_emu": 3614400,
+        "width_emu": 7038000,
+        "font_size": 18,
+        "line_spacing": 1.5,
+        "max_lines": 10,
+        "max_chars_per_line": 61,
+        "max_total_chars": 610
+      }
+    },
+    {
+      "index": 2,
+      "name": "knowledge_content_2",
+      "content_textbox": {
+        "name": "文本块_23",
+        "height_emu": 4554000,
+        "width_emu": 6771600,
+        "font_size": 18,
+        "line_spacing": 1.5,
+        "max_lines": 13,
+        "max_chars_per_line": 59,
+        "max_total_chars": 767
+      }
+    },
+    {
+      "index": 3,
+      "name": "knowledge_content_3",
+      "content_textbox": {
+        "name": "文本块_12",
+        "height_emu": 4183200,
+        "width_emu": 6998400,
+        "font_size": 18,
+        "line_spacing": 1.5,
+        "max_lines": 12,
+        "max_chars_per_line": 61,
+        "max_total_chars": 732
+      }
+    },
+    {
+      "index": 4,
+      "name": "knowledge_content_4",
+      "content_textbox": {
+        "name": "文本块_3",
+        "height_emu": 3884400,
+        "width_emu": 6408000,
+        "font_size": 18,
+        "line_spacing": 1.5,
+        "max_lines": 11,
+        "max_chars_per_line": 56,
+        "max_total_chars": 616
+      }
+    },
+    {
+      "index": 5,
+      "name": "knowledge_content_5",
+      "content_textbox": {
+        "name": "文本块_13",
+        "height_emu": 4082400,
+        "width_emu": 7372800,
+        "font_size": 18,
+        "line_spacing": 1.5,
+        "max_lines": 11,
+        "max_chars_per_line": 64,
+        "max_total_chars": 704
+      }
+    },
+    {
+      "index": 6,
+      "name": "knowledge_content_6",
+      "content_textbox": {
+        "name": "文本块_11",
+        "height_emu": 3621600,
+        "width_emu": 7146000,
+        "font_size": 18,
+        "line_spacing": 1.5,
+        "max_lines": 10,
+        "max_chars_per_line": 62,
+        "max_total_chars": 620
+      }
+    },
+    {
+      "index": 7,
+      "name": "knowledge_content_7",
+      "content_textbox": {
+        "name": "文本块_23",
+        "height_emu": 4554000,
+        "width_emu": 6771600,
+        "font_size": 18,
+        "line_spacing": 1.5,
+        "max_lines": 13,
+        "max_chars_per_line": 59,
+        "max_total_chars": 767
+      }
+    },
+    {
+      "index": 8,
+      "name": "knowledge_content_8",
+      "content_textbox": {
+        "name": "文本块_12",
+        "height_emu": 4201200,
+        "width_emu": 7156800,
+        "font_size": 18,
+        "line_spacing": 1.5,
+        "max_lines": 12,
+        "max_chars_per_line": 62,
+        "max_total_chars": 744
+      }
+    },
+    {
+      "index": 9,
+      "name": "knowledge_content_9",
+      "content_textbox": {
+        "name": "文本块_3",
+        "height_emu": 3920400,
+        "width_emu": 6480000,
+        "font_size": 18,
+        "line_spacing": 1.5,
+        "max_lines": 11,
+        "max_chars_per_line": 56,
+        "max_total_chars": 616
+      }
+    },
+    {
+      "index": 10,
+      "name": "knowledge_content_10",
+      "content_textbox": {
+        "name": "文本块_13",
+        "height_emu": 4100400,
+        "width_emu": 7340400,
+        "font_size": 18,
+        "line_spacing": 1.5,
+        "max_lines": 11,
+        "max_chars_per_line": 64,
+        "max_total_chars": 704
+      }
+    }
+  ]
+}

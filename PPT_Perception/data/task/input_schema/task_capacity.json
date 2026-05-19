@@ -1,0 +1,33 @@
+{
+  "template_name": "implementation_schema",
+  "pages": [
+    {
+      "index": 1,
+      "name": "implementation_content_1",
+      "content_textbox": {
+        "name": "文本块_2",
+        "height_emu": 2282400,
+        "width_emu": 9842400,
+        "font_size": 18,
+        "line_spacing": 1.5,
+        "max_lines": 6,
+        "max_chars_per_line": 86,
+        "max_total_chars": 516
+      }
+    },
+    {
+      "index": 2,
+      "name": "implementation_content_2",
+      "content_textbox": {
+        "name": "文本块_2",
+        "height_emu": 6789600,
+        "width_emu": 5500800,
+        "font_size": 18,
+        "line_spacing": 1.5,
+        "max_lines": 19,
+        "max_chars_per_line": 48,
+        "max_total_chars": 912
+      }
+    }
+  ]
+}

@@ -4,6 +4,7 @@ Corrector - LLM 精确字段替换
 """
 import json
 import re
+import time
 from pathlib import Path
 from LLM.client import MiniMaxClient
 from .validator import validate_lengths, format_constraints_table, format_too_long_fields, write_json
@@ -34,7 +35,7 @@ class Corrector:
     def __init__(self, client: MiniMaxClient):
         self.client = client
 
-    def correct(self, problems: dict[str, dict]) -> dict[str, str]:
+    def correct(self, problems: dict[str, dict]) -> tuple[dict[str, str], dict | None, float]:
         """
         调用 LLM 修正超长字段。
 
@@ -42,25 +43,31 @@ class Corrector:
             problems: validate_lengths() 返回的超长字段信息
 
         Returns:
-            只返回修改的字段，格式：{"section.field": "修正后的内容", ...}
+            tuple: (修改的字段, LLM使用统计信息, 耗时秒数)
         """
+        start_time = time.time()
+
         # 构建 prompt
         prompt = self._build_prompt(problems)
 
         # 调用 LLM
         messages = [{"role": "user", "content": prompt}]
-        response = self.client.chat(messages, temperature=0.3, reasoning_split=True, max_tokens=4000)
+        result = self.client.chat_with_stats(messages, temperature=0.3, reasoning_split=True, max_tokens=4000)
+        usage = result.get("usage")
+        response = result["content"]
+
+        elapsed = time.time() - start_time
 
         # 提取并解析 JSON
         corrected_fields = self._extract_json(response)
         if corrected_fields is None:
             print("[CHECKER] LLM 输出无法解析或返回类型错误，保留原字段")
-            return {}
+            return {}, usage, elapsed
 
         if not corrected_fields:
             print("[CHECKER] LLM 返回空字典，无需修改")
 
-        return corrected_fields
+        return corrected_fields, usage, elapsed
 
     def _build_prompt(self, problems: dict[str, dict]) -> str:
         """构建 Checker prompt - 只上传超长字段。"""
@@ -113,7 +120,7 @@ class Corrector:
         return result
 
 
-def check_and_correct(json_path: Path, client: MiniMaxClient, max_retries: int = 1) -> bool:
+def check_and_correct(json_path: Path, client: MiniMaxClient, max_retries: int = 1) -> tuple[bool, int, float]:
     """
     检查并修正 JSON 文件 - 精确字段替换。
 
@@ -129,9 +136,13 @@ def check_and_correct(json_path: Path, client: MiniMaxClient, max_retries: int =
         max_retries: 最多 LLM 调用次数（默认1次，即最多2次调用）
 
     Returns:
-        True if all fields are within limits, False if some fields still too long
+        tuple: (是否全部合格, 消耗的tokens数, 耗时秒数)
     """
     corrector = Corrector(client)
+    start_time = time.time()
+
+    # 总消耗 tokens
+    total_tokens = 0
 
     # 第1次检查
     with open(json_path, 'r', encoding='utf-8') as f:
@@ -139,8 +150,9 @@ def check_and_correct(json_path: Path, client: MiniMaxClient, max_retries: int =
 
     problems = validate_lengths(data)
     if not problems:
+        elapsed = time.time() - start_time
         print(f"[CHECKER] {json_path.name} - 全部合格，跳过")
-        return True
+        return True, 0, elapsed
 
     print(f"[CHECKER] {json_path.name} - 发现 {len(problems)} 个超长字段")
 
@@ -153,7 +165,11 @@ def check_and_correct(json_path: Path, client: MiniMaxClient, max_retries: int =
                 data = json.load(f)
 
         # 调用 LLM 修正超长字段（只上传超长字段）
-        corrected_fields = corrector.correct(problems)
+        corrected_fields, usage, _ = corrector.correct(problems)
+
+        # 统计 tokens
+        if usage:
+            total_tokens += usage.get("total_tokens", 0)
 
         if corrected_fields:
             # 只替换超长字段，不覆盖整个 JSON
@@ -169,12 +185,14 @@ def check_and_correct(json_path: Path, client: MiniMaxClient, max_retries: int =
         # 再次验证
         problems = validate_lengths(data)
         if not problems:
-            print(f"[CHECKER] {json_path.name} - 修正完成，全部合格")
-            return True
+            elapsed = time.time() - start_time
+            print(f"[CHECKER] {json_path.name} - 修正完成，全部合格，消耗 tokens: {total_tokens}，耗时: {elapsed:.1f}s")
+            return True, total_tokens, elapsed
 
         if attempt < max_retries:
             print(f"[CHECKER] {json_path.name} - 仍有 {len(problems)} 个字段超长，继续...")
 
     # 两次后仍超长，不再修改
-    print(f"[CHECKER] {json_path.name} - 仍有 {len(problems)} 个字段超长，不再修改")
-    return False
+    elapsed = time.time() - start_time
+    print(f"[CHECKER] {json_path.name} - 仍有 {len(problems)} 个字段超长，不再修改，消耗 tokens: {total_tokens}，耗时: {elapsed:.1f}s")
+    return False, total_tokens, elapsed

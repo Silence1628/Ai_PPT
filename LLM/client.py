@@ -18,10 +18,18 @@ class MiniMaxClient:
         )
         self.model = model
         self._lock = threading.Lock()
+        self.last_usage = None  # Track last call's token usage
 
     def chat(self, messages: list[dict], temperature: float = 1.0,
              reasoning_split: bool = False, max_retries: int = 3, **kwargs) -> str:
         """Send a chat request with exponential backoff retry, return text content."""
+        result = self.chat_with_stats(messages, temperature, reasoning_split, max_retries, **kwargs)
+        return result["content"]
+
+    def chat_with_stats(self, messages: list[dict], temperature: float = 1.0,
+                        reasoning_split: bool = False, max_retries: int = 3,
+                        return_stats: bool = True, **kwargs) -> dict:
+        """Send a chat request, optionally return usage stats."""
         extra_body = {"reasoning_split": reasoning_split} if reasoning_split else {}
         last_error = None
 
@@ -35,7 +43,14 @@ class MiniMaxClient:
                         extra_body=extra_body,
                         **kwargs
                     )
-                return response.choices[0].message.content
+                self.last_usage = {
+                    "prompt_tokens": response.usage.prompt_tokens,
+                    "completion_tokens": response.usage.completion_tokens,
+                    "total_tokens": response.usage.total_tokens,
+                }
+                if return_stats:
+                    return {"content": response.choices[0].message.content, "usage": self.last_usage}
+                return {"content": response.choices[0].message.content}
             except (RateLimitError, APIError) as e:
                 last_error = e
                 if attempt < max_retries - 1:

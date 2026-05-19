@@ -1,6 +1,6 @@
 import json
 import re
-import concurrent.futures
+import time
 from pathlib import Path
 from datetime import datetime
 from LLM.client import MiniMaxClient
@@ -41,21 +41,21 @@ class WordChunkProcessor:
         self.client = client
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(exist_ok=True)
+        self.total_tokens = 0
 
     def _cleanup_output(self):
         """Delete all task*.json files in output_dir to avoid naming conflicts."""
         for f in self.output_dir.glob("task*.json"):
             f.unlink()
 
-    def process(self, chunks: list[dict], max_workers: int = 3) -> list[Path]:
+    def process(self, chunks: list[dict]) -> list[Path]:
         """
-        Two-stage process:
+        Two-stage process (serial execution):
         - Stage 1: Generate raw JSON (fast, no length checking)
         - Stage 2: Post-process each JSON file (length validation + correction)
 
         Args:
             chunks: List of 4 dicts from chunker, index 0=chunk1, 1-3=tasks
-            max_workers: Max parallel thread workers for task processing (default 3)
 
         Returns:
             list[Path]: Paths to the 3 output task JSON files
@@ -64,57 +64,65 @@ class WordChunkProcessor:
             raise ValueError(f"Expected 4 chunks, got {len(chunks)}")
 
         self._cleanup_output()
+        self.total_tokens = 0
 
         # Stage 1: Fast generation — no length checking
         print("[PROCESSOR] 开始 Stage 1: LLM 生成 JSON...")
+        chunk1_start = time.time()
         chunk1_data = self._process_chunk1(chunks[0])
-        print("[PROCESSOR] Chunk1 素材提取完成，开始并行生成 Task JSON...")
-        output_files = self._process_tasks_parallel(chunks[1:], chunk1_data, max_workers)
+        chunk1_elapsed = time.time() - chunk1_start
+        print(f"[PROCESSOR] Chunk1 素材提取完成，耗时 {chunk1_elapsed:.1f}s")
+
+        print("[PROCESSOR] 开始串行生成 Task JSON（3个任务）...")
+        output_files = self._process_tasks_serial(chunks[1:], chunk1_data)
 
         return output_files
 
     def _process_chunk1(self, chunk: dict) -> dict:
         """Process chunk1, extract shared data for all task JSONs."""
-        prompt = build_chunk1_prompt(chunk["content"])
+        start_time = time.time()
+        prompt = build_chunk1_prompt(chunk["main_content"])
         messages = [{"role": "user", "content": prompt}]
-        response = self.client.chat(messages, temperature=0.7, reasoning_split=True, max_tokens=4000)
+        result = self.client.chat_with_stats(messages, temperature=0.7, reasoning_split=True, max_tokens=4000)
 
-        json_str = self._extract_json(response)
+        self._track_tokens(result.get("usage"))
+        json_str = self._extract_json(result["content"])
         data = json.loads(json_str)
         validated = Chunk1Output(**data)
+        elapsed = time.time() - start_time
+        print(f"[CHUNK1] 完成，耗时 {elapsed:.1f}s，tokens: {self._format_tokens(result.get('usage'))}")
         return validated.model_dump()
 
-    def _process_tasks_parallel(
-        self, task_chunks: list[dict], chunk1_data: dict, max_workers: int
-    ) -> list[Path]:
-        """Process task chunks in parallel using ThreadPoolExecutor."""
-        with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
-            futures = {
-                executor.submit(self._process_task, chunk, i + 1, chunk1_data): i
-                for i, chunk in enumerate(task_chunks)
-            }
-            results = [None] * len(task_chunks)
-            for future in concurrent.futures.as_completed(futures):
-                idx = futures[future]
-                results[idx] = future.result() 
-            return results
+    def _process_tasks_serial(self, task_chunks: list[dict], chunk1_data: dict) -> list[Path]:
+        """Process task chunks serially."""
+        results = []
+        for i, chunk in enumerate(task_chunks, 1):
+            output_path = self._process_task(chunk, i, chunk1_data)
+            results.append(output_path)
+        return results
 
     def _process_task(self, chunk: dict, index: int, chunk1_data: dict) -> Path:
         """Stage 1: Generate raw task JSON without any length checking."""
+        start_time = time.time()
         print(f"[PROCESSOR] 开始生成 Task {index}: {chunk['title'][:30]}...")
-        prompt = build_task_prompt(chunk["title"], chunk["content"], chunk1_data)
+        prompt = build_task_prompt(chunk["title"], chunk["main_content"], chunk1_data)
         messages = [{"role": "user", "content": prompt}]
 
         MAX_RETRIES = 2
         data = None
+        total_task_tokens = 0
 
         # 第一次调用 LLM
-        response = self.client.chat(messages, temperature=0.7, reasoning_split=True, max_tokens=4000)
+        result = self.client.chat_with_stats(messages, temperature=0.7, reasoning_split=True, max_tokens=4000)
+        total_task_tokens += self._get_tokens(result.get("usage"))
+        response = result["content"]
 
         for attempt in range(MAX_RETRIES + 1):
             if attempt > 0:
                 print(f"[TASK {index}] JSON解析重试 ({attempt}/{MAX_RETRIES})...")
-                response = self.client.chat(messages, temperature=0.7, reasoning_split=True, max_tokens=4000)
+                result = self.client.chat_with_stats(messages, temperature=0.7, reasoning_split=True, max_tokens=4000)
+                total_task_tokens += self._get_tokens(result.get("usage"))
+                response = result["content"]
 
             json_str = self._extract_json(response)
             if not json_str:
@@ -178,7 +186,9 @@ class WordChunkProcessor:
         with open(output_path, "w", encoding="utf-8") as f:
             json.dump(ordered_output, f, ensure_ascii=False, indent=2)
 
-        print(f"[TASK {index}] Stage 1 完成: {output_path.name}")
+        elapsed = time.time() - start_time
+        print(f"[TASK {index}] Stage 1 完成: {output_path.name}，耗时 {elapsed:.1f}s，tokens: {self._format_tokens(None)}")
+        self.total_tokens += total_task_tokens
         return output_path
 
     def _extract_task_num_from_title(self, title: str) -> str:
@@ -382,3 +392,20 @@ class WordChunkProcessor:
 
         # 所有扩展都失败，返回原提取内容让调用方处理
         return extracted
+
+    def _track_tokens(self, usage: dict):
+        """Track token usage."""
+        if usage:
+            self.total_tokens += usage.get("total_tokens", 0)
+
+    def _get_tokens(self, usage: dict) -> int:
+        """Get token count from usage dict."""
+        if usage:
+            return usage.get("total_tokens", 0)
+        return 0
+
+    def _format_tokens(self, usage: dict) -> str:
+        """Format token usage for display."""
+        if not usage:
+            return "N/A"
+        return f"prompt={usage.get('prompt_tokens', 0)}, completion={usage.get('completion_tokens', 0)}, total={usage.get('total_tokens', 0)}"

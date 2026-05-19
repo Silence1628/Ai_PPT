@@ -86,6 +86,7 @@ class PPTRenderer:
         if page_index >= self.ppt_presentation.Slides.Count:
             return
         slide = self.ppt_presentation.Slides(page_index + 1)
+        slide.Name = page.get('name', '')
         for shape_config in page.get('shapes', []):
             self._render_shape(slide, shape_config, data)
 
