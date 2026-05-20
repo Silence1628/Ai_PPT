@@ -72,7 +72,8 @@ class PaddingProcessor:
 
             segments.append({
                 "heading": heading,
-                "content_chunks": content_chunks
+                "content_chunks": content_chunks,
+                "heading_chunk_count": len(content_chunks)
             })
 
         padding_data = {
@@ -85,6 +86,8 @@ class PaddingProcessor:
         }
 
         output_file = self.output_dir / json_file.name
+        if output_file.exists():
+            output_file.unlink()
         with open(output_file, "w", encoding="utf-8") as f:
             json.dump(padding_data, f, ensure_ascii=False, indent=2)
 
@@ -116,7 +119,7 @@ class PaddingProcessor:
         """计算文本框最大字符数"""
         line_height_emu = font_size * line_spacing * 12700
         max_lines = int(height_emu / line_height_emu)
-        max_chars_per_line = int(width_emu / (font_size * 0.5 * 12700))
+        max_chars_per_line = int(width_emu / (font_size * 1.1 * 12700))
         return max_lines * max_chars_per_line
 
     def _remove_code(self, text: str) -> str:

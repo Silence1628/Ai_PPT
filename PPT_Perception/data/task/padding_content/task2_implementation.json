@@ -10,84 +10,168 @@
       "content_chunks": [
         {
           "chunk_index": 1,
-          "content": "当前任务是基于项目一任务一的环境进行。请确保已经完成项目一任务一的步骤。\n安装modelscope与datasets库\n得到如图 1-2-1所示输出则安装成功：\n图 1-2-1 安装modelscope\n打开 ModelScope 网站数据集页面搜索相关数据集\nModelScope 是阿里巴巴达摩院推出的一个 开源模型社区与平台，旨在为开发者和研究者提供便捷的模型与数据的共享、下载、训练和部署服务。它类似于 Hugging Face，但更侧重于中文及多模态模型，支持多种AI任务，如自然语言处理（NLP）、计算机视觉（CV）、语音识别等。\n浏览器搜索“ModelScope”点击数据集标签页，显示界面如图 1-2-2所示：\n图 1-2-2 modelscope数据广场\n可以在输入框搜索自己想要的数据，这里搜索firefly，如图 1-2-3所示：\n图 1-2-3 firefly搜索结果\n点击进入数据集详情页面，如图 1-2-4所示：\n图 1-2-4 firefly数据详情\nFirefly数据集包含23种常见的中文NLP任务的数据，并且构造了许多与中华文化相关的数据，如对联、作诗、文言文翻译、散文、金庸小说等。对于每个任务"
+          "content": "当前任务是基于项目一任务一的环境进行。请确保已经完成项目一任务一的步骤。\n安装modelscope与datasets库\n得到如图 1-2-1所示输出则安装成功：\n图 1-2-1 安装modelscope\n打开 ModelScope 网站数据集页面搜索相关数据集\nModelScope 是阿里巴巴达摩院推出的一个 开源模型社区与平台，旨在为开发者和研究者提供便捷的模型与数据的共享、下载、训练和部署服务。它类似于 Hugging Face，但更侧重于中文及多模态模型，支"
         },
         {
           "chunk_index": 2,
-          "content": "，由人工书写若干种指令模板，保证数据的高质量与丰富度，数据量为115万，如图 1-2-5所示。\n图 1-2-5 firefly数据集任务分布\n使用modelscope命令行下载数据集\n如果网络受限无法下载，我们也在 /app/llm_resource/llm_structure_data/firefly 目录下提供了预下载的数据集。\n回到命令行终端，下载该数据集，等待下载完成：\nmodelscope download --dataset wyj123456/firefly --local_dir /app/llm_structure_data/firefly\n--dataset指定下载数据集的具体名称\n--local_dir 指定数据集下载的目标目录\n进入/app/llm_structure_data/firefly目录下，查看下载的数据集文件，发现已经完成下载，数据量为一百万，文件大小为1.1G的较大规模数据集，如图 1-2-6所示：\n图 1-2-6 firefly下载结果"
+          "content": "持多种AI任务，如自然语言处理（NLP）、计算机视觉（CV）、语音识别等。\n浏览器搜索“ModelScope”点击数据集标签页，显示界面如图 1-2-2所示：\n图 1-2-2 modelscope数据广场\n可以在输入框搜索自己想要的数据，这里搜索firefly，如图 1-2-3所示：\n图 1-2-3 firefly搜索结果\n点击进入数据集详情页面，如图 1-2-4所示：\n图 1-2-4 firefly数据详情\nFirefly数据集包含23种常见的中文NLP任务的数"
+        },
+        {
+          "chunk_index": 3,
+          "content": "据，并且构造了许多与中华文化相关的数据，如对联、作诗、文言文翻译、散文、金庸小说等。对于每个任务，由人工书写若干种指令模板，保证数据的高质量与丰富度，数据量为115万，如图 1-2-5所示。\n图 1-2-5 firefly数据集任务分布\n使用modelscope命令行下载数据集\n如果网络受限无法下载，我们也在 /app/llm_resource/llm_structure_data/firefly 目录下提供了预下载的数据集。\n回到命令行终端，下载该数据集，等待下"
+        },
+        {
+          "chunk_index": 4,
+          "content": "载完成：\nmodelscope download --dataset wyj123456/firefly --local_dir /app/llm_structure_data/firefly\n--dataset指定下载数据集的具体名称\n--local_dir 指定数据集下载的目标目录\n进入/app/llm_structure_data/firefly目录下，查看下载的数据集文件，发现已经完成下载，数据量为一百万，文件大小为1.1G的较大规模数据集，如图 1-2-"
+        },
+        {
+          "chunk_index": 5,
+          "content": "6所示：\n图 1-2-6 firefly下载结果"
         }
-      ]
+      ],
+      "heading_chunk_count": 5
     },
     {
       "heading": "对公开数据集进行预处理",
       "content_chunks": [
         {
           "chunk_index": 1,
-          "content": "由于第一小节中下载的数据量较大，如果将这些数据全都作为训练数据集将会耗费大量的训练时间。为了后续项目能快速验证模型的训练效果，下面将对原始数据集进行切分，选择NER命名实体识别任务的前一千条数据，并将其转为json存储格式。\n命名实体识别（Named Entity Recognition，简称 NER）是自然语言处理（NLP）中的一个基础任务，其目标是从一段文本中识别出具有特定意义的实体，并将其分类到预定义的类别中，例如：人名 （Person）；地名 （Location）；组织机构名 （Organization）；时间 （Time）；日期 （Date）。\n示例输入句子：“马云在2019年创立了阿里巴巴集团，总部位于中国杭州。” 输出识别结果：马云 → 人名（Person）；2019年 → 时间（Time）；阿里巴巴集团 → 组织机构名（Organization）；中国杭州 → 地名（Location）。\n选择NER命名实体识别任务的前一千条数据，执行的代码脚本firefly_process.py内容如下：\n# 导入 json 模块，用于处理 JSON 数据格式\n# 定义输入文件路径（JSONL 格式）\ninput_f"
+          "content": "由于第一小节中下载的数据量较大，如果将这些数据全都作为训练数据集将会耗费大量的训练时间。为了后续项目能快速验证模型的训练效果，下面将对原始数据集进行切分，选择NER命名实体识别任务的前一千条数据，并将其转为json存储格式。\n命名实体识别（Named Entity Recognition，简称 NER）是自然语言处理（NLP）中的一个基础任务，其目标是从一段文本中识别出具有特定意义的实体，并将其分类到预定义的类别中，例如：人名 （Person）；地名 （Locat"
         },
         {
           "chunk_index": 2,
-          "content": "ile = '/app/llm_resource/llm_structure_data/firefly/firefly-train-1.1M.jsonl'\n# 定义输出文件路径（标准 JSON 格式）\noutput_file = '/app/llm_structure_data/firefly/firefly_ner_1k.json'\n# 初始化计数器，记录已收集的 NER 类型条目数量\ncount = 0\n# 创建一个空列表，用于存储筛选后的 NER 数据\nner_data = []\n# 使用 with 打开输入文件，以只读模式按行读取，编码为 utf-8\nwith open(input_file, 'r', encoding='utf-8') as infile:\n# 逐行读取文件内容\n# 如果已经收集到 1000 条 NER 数据，则退出循环\nbreak\n# 去除每行首尾空白字符，并将其解析为 JSON 对象\n# 判断当前条目的 kind 是否为 \"NER\"\n# 如果是 NER 类型，就将该条目添加到 ner_data 列表中\nner_data.append(item)\n# 并将计数器加 1\ncount += "
+          "content": "ion）；组织机构名 （Organization）；时间 （Time）；日期 （Date）。\n示例输入句子：“马云在2019年创立了阿里巴巴集团，总部位于中国杭州。” 输出识别结果：马云 → 人名（Person）；2019年 → 时间（Time）；阿里巴巴集团 → 组织机构名（Organization）；中国杭州 → 地名（Location）。\n选择NER命名实体识别任务的前一千条数据，执行的代码脚本firefly_process.py内容如下：\n# 导入 jso"
         },
         {
           "chunk_index": 3,
-          "content": "1\n# 如果某行不是合法的 JSON 格式，跳过该行\nexcept json.JSONDecodeError:\ncontinue  # 忽略格式错误的行\n# 使用 with 打开输出文件，以写入模式保存提取出的数据\nwith open(output_file, 'w', encoding='utf-8') as outfile:\n# 将筛选后的 ner_data 列表写入文件，并格式化为美观的 JSON 形式\njson.dump(ner_data, outfile, ensure_ascii=False, indent=2)\n# 最后打印完成信息\nprint(f\"成功提取 {len(ner_data)} 条 NER 数据并写入 {output_file}\")\n执行该数据预处理脚本：\n显示如图 1-2-7所示的输出，则表示处理与格式转换完成：\n图 1-2-7 数据处理结果\n查看处理后的数据，如图 1-2-8所示：\nhead firefly/firefly_ner_1k.json\n图 1-2-8 部分NER数据"
+          "content": "n 模块，用于处理 JSON 数据格式\n# 定义输入文件路径（JSONL 格式）\ninput_file = '/app/llm_resource/llm_structure_data/firefly/firefly-train-1.1M.jsonl'\n# 定义输出文件路径（标准 JSON 格式）\noutput_file = '/app/llm_structure_data/firefly/firefly_ner_1k.json'\n# 初始化计数器，记录已收集的 N"
+        },
+        {
+          "chunk_index": 4,
+          "content": "ER 类型条目数量\ncount = 0\n# 创建一个空列表，用于存储筛选后的 NER 数据\nner_data = []\n# 使用 with 打开输入文件，以只读模式按行读取，编码为 utf-8\nwith open(input_file, 'r', encoding='utf-8') as infile:\n# 逐行读取文件内容\n# 如果已经收集到 1000 条 NER 数据，则退出循环\nbreak\n# 去除每行首尾空白字符，并将其解析为 JSON 对象\n# 判断当前"
+        },
+        {
+          "chunk_index": 5,
+          "content": "条目的 kind 是否为 \"NER\"\n# 如果是 NER 类型，就将该条目添加到 ner_data 列表中\nner_data.append(item)\n# 并将计数器加 1\ncount += 1\n# 如果某行不是合法的 JSON 格式，跳过该行\nexcept json.JSONDecodeError:\ncontinue  # 忽略格式错误的行\n# 使用 with 打开输出文件，以写入模式保存提取出的数据\nwith open(output_file, 'w', en"
+        },
+        {
+          "chunk_index": 6,
+          "content": "coding='utf-8') as outfile:\n# 将筛选后的 ner_data 列表写入文件，并格式化为美观的 JSON 形式\njson.dump(ner_data, outfile, ensure_ascii=False, indent=2)\n# 最后打印完成信息\nprint(f\"成功提取 {len(ner_data)} 条 NER 数据并写入 {output_file}\")\n执行该数据预处理脚本：\n显示如图 1-2-7所示的输出，则表示处理与格式转换"
+        },
+        {
+          "chunk_index": 7,
+          "content": "完成：\n图 1-2-7 数据处理结果\n查看处理后的数据，如图 1-2-8所示：\nhead firefly/firefly_ner_1k.json\n图 1-2-8 部分NER数据"
         }
-      ]
+      ],
+      "heading_chunk_count": 7
     },
     {
       "heading": "构造指令数据集",
       "content_chunks": [
         {
           "chunk_index": 1,
-          "content": "该小节介绍两种自行构造指令数据的方法：利用现有大模型生成与使用指令模板生成数据。\n（一）利用现有大模型生成\n浏览器搜索“Qwen”，打开Qwen大模型的体验网址，如图 1-2-9所示：\n图 1-2-9 Qwen大模型\n依次询问大模型以下几个问题，也可以自行设计问题。注意，每个问题后面都要加上约束“300字，不换行”，以控制大模型回答字数与风格，如图 1-2-10所示：\n解释什么是深度学习\n介绍Python语言的特点\n帮我写一封英文求职信\n列举5个中国的世界文化遗产\n分析新能源的发展趋势\n图 1-2-10 Qwen大模型回复结果\n记录大模型的回复结果，并填入以下json格式的数据模板中的output项：\n[\n{\n\"instruction\": \"解释什么是深度学习\",\n\"input\": \"\",\n\"output\": \"大模型回答\"\n},\n{\n\"instruction\": \"介绍Python语言的特点\",\n\"input\": \"\",\n\"output\": \"大模型回答\"\n},\n{\n\"instruction\": \"分析大模型的发展趋势\",\n\"input\": \"\",\n\"output\": \"大模型回答\"\n}\n]\n例如，最终构造的jso"
+          "content": "该小节介绍两种自行构造指令数据的方法：利用现有大模型生成与使用指令模板生成数据。\n（一）利用现有大模型生成\n浏览器搜索“Qwen”，打开Qwen大模型的体验网址，如图 1-2-9所示：\n图 1-2-9 Qwen大模型\n依次询问大模型以下几个问题，也可以自行设计问题。注意，每个问题后面都要加上约束“300字，不换行”，以控制大模型回答字数与风格，如图 1-2-10所示：\n解释什么是深度学习\n介绍Python语言的特点\n帮我写一封英文求职信\n列举5个中国的世界文化遗产"
         },
         {
           "chunk_index": 2,
-          "content": "n格式的指令数据如下：\n[\n{\n\"instruction\": \"解释什么是深度学习\",\n\"input\": \"\",\n\"output\": \"深度学习是一种机器学习的分支，主要通过构建和训练多层神经网络来模拟人脑处理数据的方式。它以大量数据为基础，利用包含多个隐藏层的神经网络模型自动提取数据的特征表示，从而完成分类、识别、预测等任务。深度学习的核心在于“深度”结构，即通过多层次的数据抽象将原始输入转化为高层语义信息。常见的深度学习模型包括卷积神经网络（CNN）、循环神经网络（RNN）以及生成对抗网络（GAN）等。这些模型被广泛应用于图像识别、自然语言处理、语音识别、自动驾驶等领域。深度学习的成功依赖于大规模数据集的可用性、强大的计算资源（如GPU）以及优化算法的发展。它在许多人工智能任务中取得了突破性进展，成为当前AI研究和应用的主要推动力之一。\"\n},\n{\n\"instruction\": \"介绍Python语言的特点\",\n\"input\": \"\",\n\"output\": \" Python是一种高级、面向对象、解释型的编程语言，以其简洁易读、语法清晰而广受欢迎。它强调代码的可读性，允许开发者用更少的代码表达复杂的概念，从而提高开"
+          "content": "\n分析新能源的发展趋势\n图 1-2-10 Qwen大模型回复结果\n记录大模型的回复结果，并填入以下json格式的数据模板中的output项：\n[\n{\n\"instruction\": \"解释什么是深度学习\",\n\"input\": \"\",\n\"output\": \"大模型回答\"\n},\n{\n\"instruction\": \"介绍Python语言的特点\",\n\"input\": \"\",\n\"output\": \"大模型回答\"\n},\n{\n\"instruction\": \"分析大模型的发展趋势\""
         },
         {
           "chunk_index": 3,
-          "content": "发效率。Python支持多种编程范式，包括过程式、函数式和面向对象编程，适用于Web开发、数据分析、人工智能、自动化脚本等多种应用场景。该语言具有丰富的标准库和第三方库，极大扩展了其功能。例如，NumPy、Pandas用于数据处理，Matplotlib、Seaborn用于可视化，TensorFlow、PyTorch用于深度学习。Python还具备良好的跨平台能力，可在Windows、Linux、macOS等系统上运行。此外，Python拥有活跃的社区支持，学习资源丰富，是初学者入门编程的理想选择，同时也是科研和工业界广泛采用的语言之一。\"\n},\n{\n\"instruction\": \"分析大模型的发展趋势\",\n\"input\": \"\",\n\"output\": \"近年来，大模型（即大规模预训练模型）在人工智能领域取得了显著进展，并呈现出多个重要发展趋势。首先，模型规模持续扩大，参数量从数亿迅速增长到数千亿甚至更多，如GPT-4、PaLM等代表性模型，提升了语言理解和生成能力。其次，多模态融合成为热点，大模型开始整合文本、图像、音频等多种数据形式，实现跨模态理解和生成，推动了如图文生成、视频生成等新应用的发展。此外，模型的训练方"
+          "content": ",\n\"input\": \"\",\n\"output\": \"大模型回答\"\n}\n]\n例如，最终构造的json格式的指令数据如下：\n[\n{\n\"instruction\": \"解释什么是深度学习\",\n\"input\": \"\",\n\"output\": \"深度学习是一种机器学习的分支，主要通过构建和训练多层神经网络来模拟人脑处理数据的方式。它以大量数据为基础，利用包含多个隐藏层的神经网络模型自动提取数据的特征表示，从而完成分类、识别、预测等任务。深度学习的核心在于“深度”结构，即通过多层"
         },
         {
           "chunk_index": 4,
-          "content": "式趋向高效与绿色化，研究者通过模型压缩、稀疏训练、知识蒸馏等技术降低计算资源消耗，提升推理效率。同时，大模型的应用场景不断拓展，从自然语言处理延伸至医疗、金融、教育等多个行业，逐步实现产业化落地。最后，安全与伦理问题受到重视，如何提升模型可解释性、防止偏见与滥用成为研究重点。未来，大模型将朝着更智能、更高效、更安全的方向持续演进。\"\n}\n]\n复制以上json格式数据，保存到本地json格式文件。我们也在 /app/llm_structure_data 目录下提供了该数据集文件，内容与上面的回答一致可直接使用。\nvi self_data.json\n使用“vi”命令开始编辑文件，键盘输入“i”，进入输入模式，如图 1-2-11、图 1-2-12所示：\n图 1-2-11 vi编辑文件\n图 1-2-12 vi输入模式\n粘贴复制的json格式数据，如图 1-2-13所示：\n图 1-2-13 json格式输入数据\n键盘按下左上角“esc”键后输入“:wq”，保存并退出json格式数据文件编辑。ls查看编辑的文件是否存在，如：\n图 1-2-14 查看文件列表\n验证json格式数据文件的正确性。若命令行无输出，则格式正确，如图 1-"
+          "content": "次的数据抽象将原始输入转化为高层语义信息。常见的深度学习模型包括卷积神经网络（CNN）、循环神经网络（RNN）以及生成对抗网络（GAN）等。这些模型被广泛应用于图像识别、自然语言处理、语音识别、自动驾驶等领域。深度学习的成功依赖于大规模数据集的可用性、强大的计算资源（如GPU）以及优化算法的发展。它在许多人工智能任务中取得了突破性进展，成为当前AI研究和应用的主要推动力之一。\"\n},\n{\n\"instruction\": \"介绍Python语言的特点\",\n\"input"
         },
         {
           "chunk_index": 5,
-          "content": "2-15所示：\n图 1-2-15 json格式文件检查\n（二）使用指令模板生成\n除了利用现有的大模型生成回答之外，还可以利用编写好的指令模板构造数据集。比如identity数据集，identity数据集通过问答形式纠正大模型的自我认知。\n命令行输入以下指令，查看identity原始指令模板数据集：\nhead identity.json\n显示如图 1-2-16所示，其中{{name}}与{{author}}即为待替换的字符串模板，可以自行替换，修改大模型的自我认知：\n图 1-2-16 identity原始数据集\n使用以下脚本修改 identity 自我认知数据集中的身份信息，将大模型自我认知的姓名改为“新大陆智能机器人”，将大模型的创作者改为“新大陆”，也可自行修改，制作属于自己的自我认知数据集：\n# 1. 读取原始 identity 数据\ninput_file = \"/app/llm_structure_data/identity.json\"  # 输入文件名\noutput_file = \"/app/llm_structure_data/self_identity.json\"  # 输出文件名\nwith open(i"
+          "content": "\": \"\",\n\"output\": \" Python是一种高级、面向对象、解释型的编程语言，以其简洁易读、语法清晰而广受欢迎。它强调代码的可读性，允许开发者用更少的代码表达复杂的概念，从而提高开发效率。Python支持多种编程范式，包括过程式、函数式和面向对象编程，适用于Web开发、数据分析、人工智能、自动化脚本等多种应用场景。该语言具有丰富的标准库和第三方库，极大扩展了其功能。例如，NumPy、Pandas用于数据处理，Matplotlib、Seaborn用于可视"
         },
         {
           "chunk_index": 6,
-          "content": "nput_file, \"r\", encoding=\"utf-8\") as f:\n# 2. 定义替换函数\n\"\"\"\n替换模板字符串中的变量。\n参数：\noutput_text (str): 原始文本\nname (str): 模型名称\nauthor (str): 开发者或机构名称\n返回：\nstr: 替换后的文本\n\"\"\"\n# 3. 处理每条数据\nprocessed_identity = []\nnew_item = {\n\"instruction\": item[\"instruction\"],\n\"input\": item.get(\"input\", \"\"),  # 如果没有 input 字段，默认为空字符串\n\"output\": replace_template(item[\"output\"])\n}\nprocessed_identity.append(new_item)\n# 4. 保存处理后的数据到新文件\nwith open(output_file, \"w\", encoding=\"utf-8\") as f:\njson.dump(processed_identity, f, ensure_ascii=False, indent=2)\npri"
+          "content": "化，TensorFlow、PyTorch用于深度学习。Python还具备良好的跨平台能力，可在Windows、Linux、macOS等系统上运行。此外，Python拥有活跃的社区支持，学习资源丰富，是初学者入门编程的理想选择，同时也是科研和工业界广泛采用的语言之一。\"\n},\n{\n\"instruction\": \"分析大模型的发展趋势\",\n\"input\": \"\",\n\"output\": \"近年来，大模型（即大规模预训练模型）在人工智能领域取得了显著进展，并呈现出多个重要"
         },
         {
           "chunk_index": 7,
-          "content": "nt(f\"身份信息已成功替换并保存至：{output_file}\")\n运行该脚本，得到以下输出如图 1-2-17所示：\n图 1-2-17 处理identity数据集\n查看修改后的自我认知数据集，输出如图 1-2-18所示信息，则成功完成数据集修改：\nhead self_identity.json\n图 1-2-18 处理后的identity数据集\n（三）整合多个指令数据集\n为了方便后续任务的训练，我们这里将之前处理与构造的firefly_ner_1k、self_data、 self_identity数据集进行合并处理：\n# 加载三份数据\nwith open(\"/app/llm_structure_data/firefly/firefly_ner_1k.json\", \"r\", encoding=\"utf-8\") as f:\nwith open(\"/app/llm_structure_data/self_data.json\", \"r\", encoding=\"utf-8\") as f:\nwith open(\"/app/llm_structure_data/self_identity.json\", \"r\", encoding="
+          "content": "发展趋势。首先，模型规模持续扩大，参数量从数亿迅速增长到数千亿甚至更多，如GPT-4、PaLM等代表性模型，提升了语言理解和生成能力。其次，多模态融合成为热点，大模型开始整合文本、图像、音频等多种数据形式，实现跨模态理解和生成，推动了如图文生成、视频生成等新应用的发展。此外，模型的训练方式趋向高效与绿色化，研究者通过模型压缩、稀疏训练、知识蒸馏等技术降低计算资源消耗，提升推理效率。同时，大模型的应用场景不断拓展，从自然语言处理延伸至医疗、金融、教育等多个行业，逐步"
         },
         {
           "chunk_index": 8,
-          "content": "\"utf-8\") as f:\n# 合并数据\n# 保存为最终训练数据文件\nwith open(\"/app/llm_structure_data/final_train_data.json\", \"w\", encoding=\"utf-8\") as f:\njson.dump(combined_data, f, ensure_ascii=False, indent=2)\n执行数据合并脚本：\n查看合并后的数据：\nhead final_train_data.json && tail final_train_data.json\n输出如图 1-2-19所示的信息则说明合并成功：\n图 1-2-19 合并多个指令数据集"
+          "content": "实现产业化落地。最后，安全与伦理问题受到重视，如何提升模型可解释性、防止偏见与滥用成为研究重点。未来，大模型将朝着更智能、更高效、更安全的方向持续演进。\"\n}\n]\n复制以上json格式数据，保存到本地json格式文件。我们也在 /app/llm_structure_data 目录下提供了该数据集文件，内容与上面的回答一致可直接使用。\nvi self_data.json\n使用“vi”命令开始编辑文件，键盘输入“i”，进入输入模式，如图 1-2-11、图 1-2-12"
+        },
+        {
+          "chunk_index": 9,
+          "content": "所示：\n图 1-2-11 vi编辑文件\n图 1-2-12 vi输入模式\n粘贴复制的json格式数据，如图 1-2-13所示：\n图 1-2-13 json格式输入数据\n键盘按下左上角“esc”键后输入“:wq”，保存并退出json格式数据文件编辑。ls查看编辑的文件是否存在，如：\n图 1-2-14 查看文件列表\n验证json格式数据文件的正确性。若命令行无输出，则格式正确，如图 1-2-15所示：\n图 1-2-15 json格式文件检查\n（二）使用指令模板生成\n除了"
+        },
+        {
+          "chunk_index": 10,
+          "content": "利用现有的大模型生成回答之外，还可以利用编写好的指令模板构造数据集。比如identity数据集，identity数据集通过问答形式纠正大模型的自我认知。\n命令行输入以下指令，查看identity原始指令模板数据集：\nhead identity.json\n显示如图 1-2-16所示，其中{{name}}与{{author}}即为待替换的字符串模板，可以自行替换，修改大模型的自我认知：\n图 1-2-16 identity原始数据集\n使用以下脚本修改 identity "
+        },
+        {
+          "chunk_index": 11,
+          "content": "自我认知数据集中的身份信息，将大模型自我认知的姓名改为“新大陆智能机器人”，将大模型的创作者改为“新大陆”，也可自行修改，制作属于自己的自我认知数据集：\n# 1. 读取原始 identity 数据\ninput_file = \"/app/llm_structure_data/identity.json\"  # 输入文件名\noutput_file = \"/app/llm_structure_data/self_identity.json\"  # 输出文件名\nwith "
+        },
+        {
+          "chunk_index": 12,
+          "content": "open(input_file, \"r\", encoding=\"utf-8\") as f:\n# 2. 定义替换函数\n\"\"\"\n替换模板字符串中的变量。\n参数：\noutput_text (str): 原始文本\nname (str): 模型名称\nauthor (str): 开发者或机构名称\n返回：\nstr: 替换后的文本\n\"\"\"\n# 3. 处理每条数据\nprocessed_identity = []\nnew_item = {\n\"instruction\": item[\"i"
+        },
+        {
+          "chunk_index": 13,
+          "content": "nstruction\"],\n\"input\": item.get(\"input\", \"\"),  # 如果没有 input 字段，默认为空字符串\n\"output\": replace_template(item[\"output\"])\n}\nprocessed_identity.append(new_item)\n# 4. 保存处理后的数据到新文件\nwith open(output_file, \"w\", encoding=\"utf-8\") as f:\njson.dump(pr"
+        },
+        {
+          "chunk_index": 14,
+          "content": "ocessed_identity, f, ensure_ascii=False, indent=2)\nprint(f\"身份信息已成功替换并保存至：{output_file}\")\n运行该脚本，得到以下输出如图 1-2-17所示：\n图 1-2-17 处理identity数据集\n查看修改后的自我认知数据集，输出如图 1-2-18所示信息，则成功完成数据集修改：\nhead self_identity.json\n图 1-2-18 处理后的identity数据集\n（三）整合多"
+        },
+        {
+          "chunk_index": 15,
+          "content": "个指令数据集\n为了方便后续任务的训练，我们这里将之前处理与构造的firefly_ner_1k、self_data、 self_identity数据集进行合并处理：\n# 加载三份数据\nwith open(\"/app/llm_structure_data/firefly/firefly_ner_1k.json\", \"r\", encoding=\"utf-8\") as f:\nwith open(\"/app/llm_structure_data/self_data.json"
+        },
+        {
+          "chunk_index": 16,
+          "content": "\", \"r\", encoding=\"utf-8\") as f:\nwith open(\"/app/llm_structure_data/self_identity.json\", \"r\", encoding=\"utf-8\") as f:\n# 合并数据\n# 保存为最终训练数据文件\nwith open(\"/app/llm_structure_data/final_train_data.json\", \"w\", encoding=\"utf-8\") as f:\njson.dum"
+        },
+        {
+          "chunk_index": 17,
+          "content": "p(combined_data, f, ensure_ascii=False, indent=2)\n执行数据合并脚本：\n查看合并后的数据：\nhead final_train_data.json && tail final_train_data.json\n输出如图 1-2-19所示的信息则说明合并成功：\n图 1-2-19 合并多个指令数据集"
         }
-      ]
+      ],
+      "heading_chunk_count": 17
     },
     {
       "heading": "指令数据集清洗检查",
       "content_chunks": [
         {
           "chunk_index": 1,
-          "content": "本小节将对生成的最终指令数据进行系统性清洗和质量检查，确保其符合训练要求。包括：检查字段完整性；清洗非法字符、多余空格、换行符、制表符等；筛选长度合理的内容；过滤敏感词；最终输出清洗后的标准格式数据文件。具体代码脚本如下：\n# 文件路径\nINPUT_FILE = \"/app/llm_structure_data/final_train_data.json\"\nOUTPUT_FILE = \"/app/llm_structure_data/final_cleaned_data.json\"\n# 加载数据\nwith open(INPUT_FILE, \"r\", encoding=\"utf-8\") as f:\n# 敏感词库\nsensitive_words = [\"违法\", \"暴力\", \"色情\", \"赌博\"]\n# 初始化清洗数据列表和去重集合\ncleaned_data = []\n# 主流程处理\n# 初始化新条目\nnew_item = {}\n# 判断是否已有 instruction 和 output 字段（存在即不重命名）\nhas_instruction = \"instruction\" in item\nhas_output = \"ou"
+          "content": "本小节将对生成的最终指令数据进行系统性清洗和质量检查，确保其符合训练要求。包括：检查字段完整性；清洗非法字符、多余空格、换行符、制表符等；筛选长度合理的内容；过滤敏感词；最终输出清洗后的标准格式数据文件。具体代码脚本如下：\n# 文件路径\nINPUT_FILE = \"/app/llm_structure_data/final_train_data.json\"\nOUTPUT_FILE = \"/app/llm_structure_data/final_cleaned_d"
         },
         {
           "chunk_index": 2,
-          "content": "tput\" in item\n# 如果两个字段都存在，则不进行重命名，只做清洗\nnew_item[key] = cleaned_value\nnew_item[key] = value\n# 否则执行字段重命名 + 清洗\nnew_item[\"instruction\"] = cleaned_value\nelif key == \"target\":\nnew_item[\"output\"] = cleaned_value\nnew_item[key] = cleaned_value\nnew_item[key] = value\n# 检查字段完整性\nprint(f\"[跳过] 第 {idx + 1} 条数据字段缺失\")\ncontinue\n# 检查内容长度\nprint(f\"[跳过] 第 {idx + 1} 条数据内容太长\")\ncontinue\n# 敏感词过滤\nprint(f\"[跳过] 第 {idx + 1} 条数据包含敏感词\")\ncontinue\n# 去重判断：使用 (instruction, output) 元组作为唯一标识\npair_key = (instruction, output)\nprint(f\"[跳过] 第 {idx + 1} "
+          "content": "ata.json\"\n# 加载数据\nwith open(INPUT_FILE, \"r\", encoding=\"utf-8\") as f:\n# 敏感词库\nsensitive_words = [\"违法\", \"暴力\", \"色情\", \"赌博\"]\n# 初始化清洗数据列表和去重集合\ncleaned_data = []\n# 主流程处理\n# 初始化新条目\nnew_item = {}\n# 判断是否已有 instruction 和 output 字段（存在即不重命名）\nhas_inst"
         },
         {
           "chunk_index": 3,
-          "content": "条数据重复\")\ncontinue\nseen_pairs.add(pair_key)\n# 添加到清洗后数据列表\ncleaned_data.append(new_item)\n# 保存结果\nwith open(OUTPUT_FILE, \"w\", encoding=\"utf-8\") as f:\njson.dump(cleaned_data, f, ensure_ascii=False, indent=2)\nprint(f\"数据清洗完成，共保留 {len(cleaned_data)} 条有效数据\")\nprint(f\"已保存至：{OUTPUT_FILE}\")\n执行该脚本，得到输出如图 1-2-20所示：\n图 1-2-20 指令数据集清洗结果\n查看清洗后的数据，可以看到字段名称，修改为instruction，并且中英文混杂时，英文前后多余的空格消失，如图 1-2-21所示：\nhead final_cleaned_data.json && tail final_cleaned_data.json\n图 1-2-21 清洗后的指令数据集"
+          "content": "ruction = \"instruction\" in item\nhas_output = \"output\" in item\n# 如果两个字段都存在，则不进行重命名，只做清洗\nnew_item[key] = cleaned_value\nnew_item[key] = value\n# 否则执行字段重命名 + 清洗\nnew_item[\"instruction\"] = cleaned_value\nelif key == \"target\":\nnew_item[\"output"
+        },
+        {
+          "chunk_index": 4,
+          "content": "\"] = cleaned_value\nnew_item[key] = cleaned_value\nnew_item[key] = value\n# 检查字段完整性\nprint(f\"[跳过] 第 {idx + 1} 条数据字段缺失\")\ncontinue\n# 检查内容长度\nprint(f\"[跳过] 第 {idx + 1} 条数据内容太长\")\ncontinue\n# 敏感词过滤\nprint(f\"[跳过] 第 {idx + 1} 条数据包含敏感词\")\ncontinue\n# 去"
+        },
+        {
+          "chunk_index": 5,
+          "content": "重判断：使用 (instruction, output) 元组作为唯一标识\npair_key = (instruction, output)\nprint(f\"[跳过] 第 {idx + 1} 条数据重复\")\ncontinue\nseen_pairs.add(pair_key)\n# 添加到清洗后数据列表\ncleaned_data.append(new_item)\n# 保存结果\nwith open(OUTPUT_FILE, \"w\", encoding=\"utf-8\") "
+        },
+        {
+          "chunk_index": 6,
+          "content": "as f:\njson.dump(cleaned_data, f, ensure_ascii=False, indent=2)\nprint(f\"数据清洗完成，共保留 {len(cleaned_data)} 条有效数据\")\nprint(f\"已保存至：{OUTPUT_FILE}\")\n执行该脚本，得到输出如图 1-2-20所示：\n图 1-2-20 指令数据集清洗结果\n查看清洗后的数据，可以看到字段名称，修改为instruction，并且中英文混杂时，英文前后多余的空格消失"
+        },
+        {
+          "chunk_index": 7,
+          "content": "，如图 1-2-21所示：\nhead final_cleaned_data.json && tail final_cleaned_data.json\n图 1-2-21 清洗后的指令数据集"
         }
-      ]
+      ],
+      "heading_chunk_count": 7
     }
   ]
 }

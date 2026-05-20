@@ -181,8 +181,7 @@ class WordChunkProcessor:
         # Reorder fields to exactly match test_input.json
         ordered_output = {k: output_data[k] for k in TASK_JSON_FIELD_ORDER if k in output_data}
 
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        output_path = self.output_dir / f"task{index}_{timestamp}.json"
+        output_path = self.output_dir / f"task{index}.json"
         with open(output_path, "w", encoding="utf-8") as f:
             json.dump(ordered_output, f, ensure_ascii=False, indent=2)
 
