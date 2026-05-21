@@ -45,7 +45,7 @@ Thumbs.db
 
 # Project specific
 Word_Chunks/json_output/
-PPT_Framework/ppt_output/
+PPT_Framework/base_ppt/
 Word_Chunks/__pycache__/
 Word_Chunks/checker/__pycache__/
 Word_Chunks/processor/__pycache__/

@@ -99,9 +99,20 @@ def step4_assemble_and_fill():
     fill_processor.process_all()
 
 
-def step5_combine_ppt():
-    """组合两个 PPT（暂不开发）"""
-    raise NotImplementedError("Step 5 组合 PPT 暂不开发")
+def step5_integrate_ppt():
+    """整合 temp PPT 到 base PPT"""
+    print("\n" + "=" * 70)
+    print("[Step 5] Integrate: temp PPT → base PPT")
+    print("=" * 70)
+
+    from scripts.integrate import IntegrateProcessor
+
+    BASE_PPT_DIR = PROJECT_ROOT / "PPT_Framework" / "base_ppt"
+    TEMP_DIR = PROJECT_ROOT / "PPT_Perception" / "temp"
+    OUTPUT_DIR = PROJECT_ROOT / "output"
+
+    processor = IntegrateProcessor(BASE_PPT_DIR, TEMP_DIR, OUTPUT_DIR)
+    processor.process_all()
 
 
 def main():
@@ -114,11 +125,11 @@ def main():
         step2_padding()
         step3_render_and_mapping()
         step4_assemble_and_fill()
-        # step5_combine_ppt()  # 暂不开发
-    except NotImplementedError as e:
-        print(f"\n[跳过] {e}")
+        step5_integrate_ppt()
+    except Exception as e:
+        print(f"\n[ERROR] {e}")
 
-        print("\n" + "=" * 70)
+    print("\n" + "=" * 70)
     print("完成")
     print("=" * 70)
 

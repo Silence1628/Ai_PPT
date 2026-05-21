@@ -104,7 +104,7 @@
     ]
   },
   "task": {
-    "subcatelog_dir": "subcatelog/4/catelog_single",
+    "subcatelog_dir": "subcatelog/2/catelog_single",
     "segments": [
       {
         "heading": "使用不同的分词器实现分词",

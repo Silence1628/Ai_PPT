@@ -97,8 +97,18 @@ class AssembleProcessor:
             except PermissionError:
                 pass
 
+        # 从 subcatelog_dir 中提取 heading4_count (e.g., "subcatelog/2/catelog_single" → 2)
+        section_heading4_count = heading4_count
+        if subcatelog_dir_name:
+            parts = subcatelog_dir_name.split("/")
+            if len(parts) >= 2:
+                try:
+                    section_heading4_count = int(parts[1])
+                except ValueError:
+                    section_heading4_count = heading4_count
+
         # 用 subcatelog page_1 作为基础文件
-        base_file = self.template_dir / self.SUBCATELOG_SINGLE_DIR / str(heading4_count) / "page_1.pptx"
+        base_file = self.template_dir / self.SUBCATELOG_SINGLE_DIR / str(section_heading4_count) / "page_1.pptx"
         if not base_file.exists():
             print(f"    [WARN] base file not found: {base_file}")
             return None

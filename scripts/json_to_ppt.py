@@ -23,7 +23,7 @@ from PPT_Framework.renderer import PPTRenderer
 WORD_OUTPUT_DIR = PROJECT_ROOT / "Word_Chunks" / "json_output"
 PPT_TEMPLATE = PROJECT_ROOT / "PPT_Framework" / "templates" / "template.pptx"
 PPT_SCHEMA = PROJECT_ROOT / "PPT_Framework" / "templates" / "template_schema.json"
-PPT_OUTPUT_DIR = PROJECT_ROOT / "ppt_output"
+PPT_OUTPUT_DIR = PROJECT_ROOT / "PPT_Framework" / "base_ppt"
 
 
 def run_json_to_ppt():

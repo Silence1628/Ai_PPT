@@ -13,7 +13,7 @@ sys.path.insert(0, str(PROJECT_ROOT))
 
 from Word_Chunks.chunker import WordChunker
 
-WORD_INPUT_DIR = PROJECT_ROOT / "word_input"
+WORD_INPUT_DIR = PROJECT_ROOT / "input"
 KNOWLEDGE_ORIGINAL_DIR = PROJECT_ROOT / "PPT_Perception" / "data" / "knowledge" / "original_content"
 TASK_ORIGINAL_DIR = PROJECT_ROOT / "PPT_Perception" / "data" / "task" / "original_content"
 

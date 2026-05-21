@@ -47,13 +47,15 @@ class MappingProcessor:
         """生成 mapping JSON"""
         task_num = knowledge_data.get("task_num", "")
         task_title = knowledge_data.get("task_title", "")
-        heading4_count = knowledge_data.get("heading4_count", 0)
+        knowledge_heading4_count = knowledge_data.get("heading4_count", 0)
         knowledge_segments = knowledge_data.get("segments", [])
 
-        print(f"  [Mapping] task={task_num}, heading4_count={heading4_count}")
+        task_heading4_count = task_data.get("heading4_count", 0) if task_data else 0
 
-        if heading4_count < 2:
-            print(f"  [WARN] heading4_count={heading4_count} < 2，跳过")
+        print(f"  [Mapping] task={task_num}, knowledge_h4={knowledge_heading4_count}, task_h4={task_heading4_count}")
+
+        if knowledge_heading4_count < 2:
+            print(f"  [WARN] knowledge_heading4_count={knowledge_heading4_count} < 2，跳过")
             return None
 
         # 获取 task segments
@@ -72,13 +74,13 @@ class MappingProcessor:
         mapping_data = {
             "task_num": task_num,
             "task_title": task_title,
-            "heading4_count": heading4_count,
+            "heading4_count": knowledge_heading4_count,
             "knowledge": {
-                "subcatelog_dir": f"{self.SUBCATELOG_SINGLE_DIR}/{heading4_count}/catelog_single",
+                "subcatelog_dir": f"{self.SUBCATELOG_SINGLE_DIR}/{knowledge_heading4_count}/catelog_single",
                 "segments": knowledge_segments_mapping
             },
             "task": {
-                "subcatelog_dir": f"{self.SUBCATELOG_SINGLE_DIR}/{heading4_count}/catelog_single",
+                "subcatelog_dir": f"{self.SUBCATELOG_SINGLE_DIR}/{task_heading4_count}/catelog_single",
                 "segments": task_segments_mapping
             }
         }

@@ -23,7 +23,7 @@ from Word_Chunks.chunker import WordChunker
 from Word_Chunks.processor import WordChunkProcessor
 from Word_Chunks.checker import check_and_correct
 
-WORD_INPUT_DIR = PROJECT_ROOT / "word_input"
+WORD_INPUT_DIR = PROJECT_ROOT / "input"
 WORD_OUTPUT_DIR = PROJECT_ROOT / "Word_Chunks" / "json_output"
 KNOWLEDGE_ORIGINAL_DIR = PROJECT_ROOT / "PPT_Perception" / "data" / "knowledge" / "original_content"
 TASK_ORIGINAL_DIR = PROJECT_ROOT / "PPT_Perception" / "data" / "task" / "original_content"
