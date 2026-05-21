@@ -3,7 +3,7 @@
   "task_title": "任务二 大模型公开数据集收集与指令数据构造",
   "template_type": "knowledge_reserve",
   "heading4_count": 4,
-  "schema_name": "knowledge_schema",
+  "schema_name": "knowledge_capacity",
   "segments": [
     {
       "heading": "不同训练阶段数据集",

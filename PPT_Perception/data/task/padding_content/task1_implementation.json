@@ -3,7 +3,7 @@
   "task_title": "任务一 大模型基石——Transformer",
   "template_type": "task_implementation",
   "heading4_count": 4,
-  "schema_name": "implementation_schema",
+  "schema_name": "task_capacity",
   "segments": [
     {
       "heading": "环境准备",

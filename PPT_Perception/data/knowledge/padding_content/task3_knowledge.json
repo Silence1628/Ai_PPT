@@ -3,7 +3,7 @@
   "task_title": "任务三 大模型文本分词与向量化",
   "template_type": "knowledge_reserve",
   "heading4_count": 4,
-  "schema_name": "knowledge_schema",
+  "schema_name": "knowledge_capacity",
   "segments": [
     {
       "heading": "大模型处理自然语言输入的流程",

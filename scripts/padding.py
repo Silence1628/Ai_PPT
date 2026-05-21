@@ -1,9 +1,9 @@
 """
-Padding Content 生成脚本
+Padding 生成脚本
 将 original_content 转换为 padding_content JSON
 
 用法：
-    python scripts/padding_content.py
+    python scripts/padding.py
 """
 import sys
 from pathlib import Path
@@ -13,8 +13,8 @@ sys.path.insert(0, str(PROJECT_ROOT))
 
 from PPT_Perception.content_process import PaddingProcessor
 
-KNOWLEDGE_SCHEMA = PROJECT_ROOT / "PPT_Perception" / "content_process" / "template" / "knowledge" / "knowledge_schema.json"
-TASK_SCHEMA = PROJECT_ROOT / "PPT_Perception" / "content_process" / "template" / "task" / "implementation_schema.json"
+KNOWLEDGE_SCHEMA = PROJECT_ROOT / "PPT_Perception" / "data" / "knowledge" / "input_schema" / "knowledge_capacity.json"
+TASK_SCHEMA = PROJECT_ROOT / "PPT_Perception" / "data" / "task" / "input_schema" / "task_capacity.json"
 
 KNOWLEDGE_ORIGINAL_DIR = PROJECT_ROOT / "PPT_Perception" / "data" / "knowledge" / "original_content"
 TASK_ORIGINAL_DIR = PROJECT_ROOT / "PPT_Perception" / "data" / "task" / "original_content"

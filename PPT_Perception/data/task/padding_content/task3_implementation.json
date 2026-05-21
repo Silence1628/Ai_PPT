@@ -3,7 +3,7 @@
   "task_title": "任务三 大模型文本分词与向量化",
   "template_type": "task_implementation",
   "heading4_count": 2,
-  "schema_name": "implementation_schema",
+  "schema_name": "task_capacity",
   "segments": [
     {
       "heading": "使用不同的分词器实现分词",

@@ -3,7 +3,7 @@
   "task_title": "任务二 大模型公开数据集收集与指令数据构造",
   "template_type": "task_implementation",
   "heading4_count": 4,
-  "schema_name": "implementation_schema",
+  "schema_name": "task_capacity",
   "segments": [
     {
       "heading": "访问与下载公开数据集（ModelScope平台）",

@@ -3,7 +3,7 @@
   "task_title": "任务一 大模型基石——Transformer",
   "template_type": "knowledge_reserve",
   "heading4_count": 4,
-  "schema_name": "knowledge_schema",
+  "schema_name": "knowledge_capacity",
   "segments": [
     {
       "heading": "大模型概述",

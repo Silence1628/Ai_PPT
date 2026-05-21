@@ -105,8 +105,8 @@ class PaddingProcessor:
 
         first_page = pages[0]
         textbox = first_page.get("content_textbox", {})
-        height = textbox.get("height", 0)
-        width = textbox.get("width", 0)
+        height = textbox.get("height_emu", 0)
+        width = textbox.get("width_emu", 0)
         font_info = textbox.get("font", {})
         font_size = font_info.get("size", 18)
         line_spacing = font_info.get("line_spacing", 1.5)

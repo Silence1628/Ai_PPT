@@ -1,2 +1,4 @@
-from .padding_processor import PaddingProcessor
-from .mapping_processor import MappingProcessor
+from .padding import PaddingProcessor
+from .mapping import MappingProcessor
+from .assemble import AssembleProcessor
+from .fill import FillProcessor
