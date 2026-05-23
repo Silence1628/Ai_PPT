@@ -67,7 +67,7 @@ class IntegrateProcessor:
 
         # 对应的 temp 文件
         knowledge_pptx = self.temp_dir / "knowledge" / f"task{task_num}_knowledge.pptx"
-        task_pptx = self.temp_dir / "task" / f"task{task_num}_task.pptx"
+        task_pptx = self.temp_dir / "task" / f"task{task_num}_implementation.pptx"
 
         if not knowledge_pptx.exists():
             print(f"  [WARN] knowledge not found: {knowledge_pptx}")
@@ -175,8 +175,8 @@ def main():
 
     PROJECT_ROOT = Path(__file__).parent.parent.resolve()
 
-    BASE_PPT_DIR = PROJECT_ROOT / "PPT_Framework" / "base_ppt"
-    TEMP_DIR = PROJECT_ROOT / "PPT_Perception" / "temp"
+    BASE_PPT_DIR = PROJECT_ROOT / "base_ppt" / "base_output"
+    TEMP_DIR = PROJECT_ROOT / "final_ppt" / "temp"
     OUTPUT_DIR = PROJECT_ROOT / "output"
 
     processor = IntegrateProcessor(BASE_PPT_DIR, TEMP_DIR, OUTPUT_DIR)

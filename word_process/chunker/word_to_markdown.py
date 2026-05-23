@@ -164,6 +164,13 @@ class WordToMarkdown:
                 style_id = pStyle.get('{http://schemas.openxmlformats.org/wordprocessingml/2006/main}val')
                 style = self._resolve_style(style_id)
 
+        # 检测代码样式（代码、代码2）
+        is_code = False
+        if style:
+            style_lower = style.lower()
+            if '代码' in style_lower:
+                is_code = True
+
         # 获取文本内容
         texts = []
         for t in p_elem.iter('{http://schemas.openxmlformats.org/wordprocessingml/2006/main}t'):
@@ -183,7 +190,8 @@ class WordToMarkdown:
 
         return {
             'style': style or 'Normal',
-            'text': text
+            'text': text,
+            'is_code': is_code
         }
 
     def _extract_textboxes_vml(self, doc_path: str) -> Dict[int, str]:
@@ -244,9 +252,13 @@ class WordToMarkdown:
         before_task_content = []
         task_contents = {}
 
+        # 代码块状态追踪
+        in_code_block = False
+
         for idx, para in enumerate(paragraphs):
             style_name = para.get('style', 'Normal')
             text = para.get('text', '').strip()
+            is_code = para.get('is_code', False)
 
             # 标准化样式名
             # Word XML 中 style 可能存为 ID（如 "2"）或名称（如 "heading 1"）
@@ -258,6 +270,30 @@ class WordToMarkdown:
             is_heading4 = style_lower in ('heading 4', '4', 'heading4') or 'heading 4' in style_lower
             is_heading5 = style_lower in ('heading 5', '5', 'heading5') or 'heading 5' in style_lower
 
+            # 处理代码块状态切换（仅在非代码段落时处理）
+            if is_code and not in_code_block:
+                # 进入代码块
+                if current_h2 and task_contents:
+                    task_num = self._get_last_task_num(task_contents)
+                    if task_num and task_num in task_contents:
+                        task_contents[task_num]["full_content"].append("```")
+                        task_contents[task_num]["base_content"].append("```")
+                        task_contents[task_num]["perception_content"].append("```")
+                elif current_project and not current_h2:
+                    before_task_content.append("```")
+                in_code_block = True
+            elif not is_code and in_code_block:
+                # 退出代码块
+                if current_h2 and task_contents:
+                    task_num = self._get_last_task_num(task_contents)
+                    if task_num and task_num in task_contents:
+                        task_contents[task_num]["full_content"].append("```")
+                        task_contents[task_num]["base_content"].append("```")
+                        task_contents[task_num]["perception_content"].append("```")
+                elif current_project and not current_h2:
+                    before_task_content.append("```")
+                in_code_block = False
+
             # 检查 textbox
             if idx in textboxes and current_project:
                 tb_text = textboxes[idx]
@@ -267,11 +303,13 @@ class WordToMarkdown:
                         task_contents[task_num]["full_content"].append(tb_text)
                         task_contents[task_num]["base_content"].append(tb_text)
 
-            if not text:
+            if not text and not is_code:
                 continue
 
             # Heading 1 - 新项目开始
             if is_heading1:
+                # 退出任何代码块
+                in_code_block = False
                 if current_project is not None:
                     projects[current_project] = {
                         "before_task": list(before_task_content),
@@ -286,6 +324,7 @@ class WordToMarkdown:
 
             # Heading 2 - 新任务开始
             elif is_heading2 and current_project:
+                in_code_block = False
                 current_h2 = text
                 task_num = self._extract_task_num(text)
                 if task_num:
@@ -299,6 +338,7 @@ class WordToMarkdown:
 
             # 项目级别 Heading 3
             elif text in self.PROJECT_LEVEL_HEADING3 and current_project:
+                in_code_block = False
                 if current_h2 and task_contents:
                     task_num = self._get_last_task_num(task_contents)
                     if task_num and task_num in task_contents:
@@ -309,6 +349,7 @@ class WordToMarkdown:
 
             # 特殊章节标题
             elif text in self.PERCEPTION_SECTION_MARKERS:
+                in_code_block = False
                 current_section = "perception"
                 if current_project:
                     if current_h2 and task_contents:
@@ -321,6 +362,7 @@ class WordToMarkdown:
                         before_task_content.append(f"### {text}")
 
             elif text in self.BASE_SECTION_MARKERS:
+                in_code_block = False
                 current_section = "base"
                 if current_project:
                     if current_h2 and task_contents:
@@ -334,8 +376,7 @@ class WordToMarkdown:
 
             # Heading 3
             elif is_heading3 and current_h2:
-                if current_section is None:
-                    current_section = "base"
+                in_code_block = False
                 if current_h2 and task_contents:
                     task_num = self._get_last_task_num(task_contents)
                     if task_num and task_num in task_contents:
@@ -348,6 +389,7 @@ class WordToMarkdown:
 
             # Heading 4
             elif is_heading4 and current_h2:
+                in_code_block = False
                 if current_h2 and task_contents:
                     task_num = self._get_last_task_num(task_contents)
                     if task_num and task_num in task_contents:
@@ -360,6 +402,7 @@ class WordToMarkdown:
 
             # Heading 5
             elif is_heading5 and current_h2:
+                in_code_block = False
                 if current_h2 and task_contents:
                     task_num = self._get_last_task_num(task_contents)
                     if task_num and task_num in task_contents:
@@ -370,8 +413,37 @@ class WordToMarkdown:
                         elif current_section == "perception":
                             task_contents[task_num]["perception_content"].append(h5_text)
 
+            # 代码段落 - 使用 ``` 包围（相邻代码段落合并为一个代码块）
+            elif current_project and is_code:
+                code_text = text
+                if current_h2 and task_contents:
+                    task_num = self._get_last_task_num(task_contents)
+                    if task_num and task_num in task_contents:
+                        # 代码块已在状态切换时打开，这里只添加代码文本
+                        task_contents[task_num]["full_content"].append(code_text)
+                        if current_section == "base":
+                            task_contents[task_num]["base_content"].append(code_text)
+                        elif current_section == "perception":
+                            task_contents[task_num]["perception_content"].append(code_text)
+                        else:
+                            task_contents[task_num]["base_content"].append(code_text)
+                elif current_project and not current_h2:
+                    # 代码块已在状态切换时打开，这里只添加代码文本
+                    before_task_content.append(code_text)
+
             # 普通文本
             elif current_project and text:
+                # 非代码段落，退出代码块时添加结束标记
+                if in_code_block:
+                    if current_h2 and task_contents:
+                        task_num = self._get_last_task_num(task_contents)
+                        if task_num and task_num in task_contents:
+                            task_contents[task_num]["full_content"].append("```")
+                            task_contents[task_num]["base_content"].append("```")
+                            task_contents[task_num]["perception_content"].append("```")
+                    elif current_project and not current_h2:
+                        before_task_content.append("```")
+                    in_code_block = False
                 if current_h2 and task_contents:
                     task_num = self._get_last_task_num(task_contents)
                     if task_num and task_num in task_contents:
@@ -384,6 +456,10 @@ class WordToMarkdown:
                             task_contents[task_num]["base_content"].append(text)
                 elif current_project and not current_h2:
                     before_task_content.append(text)
+
+        # 项目结束前关闭代码块
+        if in_code_block:
+            in_code_block = False
 
         if current_project is not None:
             projects[current_project] = {

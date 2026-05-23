@@ -9,6 +9,7 @@ fill_processor - 填充 temp PPTX 中的占位符
 """
 import json
 import re
+from collections import OrderedDict
 from pathlib import Path
 
 import win32com.client
@@ -18,21 +19,18 @@ import pythoncom
 class FillProcessor:
     """填充 temp PPTX 占位符"""
 
-    def __init__(self, temp_dir: Path, mapping_dir: Path):
+    def __init__(self, temp_dir: Path):
         self.temp_dir = Path(temp_dir)
-        self.mapping_dir = Path(mapping_dir)
 
     def _get_ppt_app(self):
         """获取 PowerPoint COM 对象"""
         import pythoncom
 
-        # 尝试获取已有实例
         try:
             return win32com.client.GetActiveObject("PowerPoint.Application")
         except Exception:
             pass
 
-        # 尝试创建新实例
         try:
             return win32com.client.Dispatch("WPP.Application")
         except Exception:
@@ -42,9 +40,9 @@ class FillProcessor:
                 print("    [ERROR] Cannot start PowerPoint application")
                 return None
 
-    def process_all(self) -> dict:
+    def process_all(self, padding_dir: Path) -> dict:
         """
-        一次打开 PowerPoint，处理所有 mapping JSON。
+        一次打开 PowerPoint，处理 padding 下的所有 task。
 
         Returns:
             dict: {task_num: {"knowledge": Path, "task": Path}} 填充后的文件路径
@@ -65,24 +63,26 @@ class FillProcessor:
                 pass
 
             results = {}
-            for mapping_json in sorted(self.mapping_dir.glob("task*_mapping.json")):
-                print(f"\n[Fill] {mapping_json.name}")
-                result = self._process_one_mapping(mapping_json, ppt_app)
+            k_dir = padding_dir / "knowledge"
+            t_dir = padding_dir / "task"
+            for k_file in sorted(k_dir.glob("task*_knowledge.json")):
+                task_num = k_file.stem.replace("_knowledge", "")
+                t_file = t_dir / f"{task_num}_implementation.json"
+                if not t_file.exists():
+                    continue
+                print(f"\n[Fill] {k_file.stem.replace('_knowledge','')}")
+                result = self._process_padding(k_file, t_file, ppt_app)
                 if result:
-                    results[mapping_json.stem] = result
+                    results[f"task{task_num}"] = result
 
             ppt_app.Quit()
             return results
         finally:
             pythoncom.CoUninitialize()
 
-    def process_from_mapping(self, mapping_json: Path) -> dict:
+    def process(self, knowledge_json: Path, task_json: Path) -> dict:
         """
-        读取 mapping JSON，填充对应的 temp PPTX。
-        每次调用都会打开关闭 PowerPoint（向后兼容）。
-
-        Returns:
-            dict: {"knowledge": Path, "task": Path} 填充后的文件路径
+        读取 knowledge 和 task 的 padding JSON，填充对应的 temp PPTX。
         """
         pythoncom.CoInitialize()
         try:
@@ -99,41 +99,67 @@ class FillProcessor:
             except Exception:
                 pass
 
-            result = self._process_one_mapping(mapping_json, ppt_app)
+            result = self._process_padding(knowledge_json, task_json, ppt_app)
             ppt_app.Quit()
             return result
         finally:
             pythoncom.CoUninitialize()
 
-    def _process_one_mapping(self, mapping_json: Path, ppt_app) -> dict:
-        """处理单个 mapping JSON 文件"""
-        with open(mapping_json, "r", encoding="utf-8") as f:
-            mapping_data = json.load(f)
+    @staticmethod
+    def padding_to_section(chunks: list, module_type: str) -> dict:
+        """将 padding chunks 按 H3 分组，转为 _fill_pptx 需要的 section 格式
 
-        task_num = mapping_data.get("task_num", "")
-        knowledge_data = mapping_data.get("knowledge", {})
-        task_section_data = mapping_data.get("task", {})
+        content_pages 映射规则：
+        - knowledge: 10页模板，page_1~10 循环使用
+        - task: 2页模板，page_1/page_2 交替使用
+        """
+        MAX_PAGES = 10 if module_type == "knowledge" else 2
 
-        print(f"  [FillProcessor] task={task_num}")
+        groups = OrderedDict()
+        for chunk in chunks:
+            parent = chunk.get("parent_title", "") or chunk.get("title", "")
+            if parent not in groups:
+                groups[parent] = []
+            for sub in chunk.get("sub_chunks", []):
+                groups[parent].append(sub.get("content", ""))
 
-        # 填充 knowledge PPTX
+        segments = []
+        page_idx = 0
+        global_chunk_idx = 0
+        for heading, contents in groups.items():
+            page_idx += 1
+            content_chunks = [{"chunk_index": i + 1, "content": ct}
+                              for i, ct in enumerate(contents) if ct]
+            pages = []
+            for _ in range(len(content_chunks)):
+                pages.append(f"page_{global_chunk_idx % MAX_PAGES + 1}")
+                global_chunk_idx += 1
+            segments.append({
+                "heading": heading,
+                "heading_chunk_count": len(content_chunks),
+                "content_chunks": content_chunks,
+                "subcatelog_page": f"page_{page_idx}",
+                "content_pages": pages
+            })
+
+        return {"segments": segments, "subcatelog_dir": ""}
+
+    def _process_padding(self, knowledge_json: Path, task_json: Path, ppt_app) -> dict:
+        """处理单个 task 的 knowledge + task padding 文件"""
+        k_data = json.loads(knowledge_json.read_text(encoding='utf-8'))
+        t_data = json.loads(task_json.read_text(encoding='utf-8'))
+
+        task_num = k_data.get("task_num", "")
+        k_section = self.padding_to_section(k_data.get("chunks", []), "knowledge")
+        t_section = self.padding_to_section(t_data.get("chunks", []), "task")
+
+        print(f"  [Fill] task={task_num}")
+
         knowledge_output = self._fill_pptx(
-            ppt_app,
-            knowledge_data,
-            task_num,
-            "knowledge",
-            "03",
-            "知识储备"
+            ppt_app, k_section, task_num, "knowledge", "03", "知识储备"
         )
-
-        # 填充 task PPTX
         task_output = self._fill_pptx(
-            ppt_app,
-            task_section_data,
-            task_num,
-            "task",
-            "04",
-            "任务实施"
+            ppt_app, t_section, task_num, "task", "04", "任务实施"
         )
 
         return {"knowledge": knowledge_output, "task": task_output}
@@ -146,7 +172,8 @@ class FillProcessor:
         segments = section_data.get("segments", [])
         all_headings = [seg.get("heading", "") for seg in segments]
 
-        pptx_file = self.temp_dir / module_type / f"task{task_num}_{module_type}.pptx"
+        module_suffix = "knowledge" if module_type == "knowledge" else "implementation"
+        pptx_file = self.temp_dir / module_type / f"task{task_num}_{module_suffix}.pptx"
         if not pptx_file.exists():
             print(f"    [WARN] file not found: {pptx_file}")
             return None
@@ -246,19 +273,22 @@ if __name__ == "__main__":
     import sys
     from pathlib import Path as PathLib
 
-    PROJECT_ROOT = PathLib(__file__).parent.parent.resolve()
+    PROJECT_ROOT = PathLib(__file__).parent.parent.parent.resolve()
     sys.path.insert(0, str(PROJECT_ROOT))
 
-    TEMP_DIR = PROJECT_ROOT / "PPT_Perception" / "temp"
-    MAPPING_DIR = PROJECT_ROOT / "PPT_Perception" / "mapping"
+    TEMP_DIR = PROJECT_ROOT / "final_ppt" / "temp"
+    PADDING_BASE = PROJECT_ROOT / "word_process" / "llm_output" / "perception_json"
 
-    processor = FillProcessor(TEMP_DIR, MAPPING_DIR)
+    processor = FillProcessor(TEMP_DIR)
 
     print("=" * 60)
     print("Fill Processor: 填充 temp PPTX 占位符")
     print("=" * 60)
 
-    processor.process_all()
+    project_dirs = sorted([d for d in PADDING_BASE.iterdir() if d.is_dir() and d.name.startswith('项目')])
+    for project_dir in project_dirs:
+        print(f"\n[Project] {project_dir.name}")
+        processor.process_all(project_dir)
 
     print("\n" + "=" * 60)
     print("Done!")

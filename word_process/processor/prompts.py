@@ -138,20 +138,20 @@ chunk1_guiding_problem3: "{guiding_problem3}"
 
 def build_chunk1_prompt(content: str) -> str:
     """Build prompt for chunk1 processing."""
-    return CHUNK1_PROMPT.format(content=content)
+    return CHUNK1_PROMPT.replace('{content}', content)
 
 
 def build_task_prompt(title: str, content: str, chunk1_data: dict) -> str:
     """Build prompt for task chunk (chunk2-4) processing."""
-    return CHUNK_TASK_PROMPT.format(
-        project_name=chunk1_data.get("project_name", ""),
-        introduction_case=chunk1_data.get("introduction_case", ""),
-        guiding_problem1=chunk1_data.get("guiding_problem1", ""),
-        guiding_problem2=chunk1_data.get("guiding_problem2", ""),
-        guiding_problem3=chunk1_data.get("guiding_problem3", ""),
-        title=title,
-        content=content,
-    )
+    prompt = CHUNK_TASK_PROMPT
+    prompt = prompt.replace('{project_name}', chunk1_data.get("project_name", ""))
+    prompt = prompt.replace('{introduction_case}', chunk1_data.get("introduction_case", ""))
+    prompt = prompt.replace('{guiding_problem1}', chunk1_data.get("guiding_problem1", ""))
+    prompt = prompt.replace('{guiding_problem2}', chunk1_data.get("guiding_problem2", ""))
+    prompt = prompt.replace('{guiding_problem3}', chunk1_data.get("guiding_problem3", ""))
+    prompt = prompt.replace('{title}', title)
+    prompt = prompt.replace('{content}', content)
+    return prompt
 
 
 # =============================================================================
@@ -209,16 +209,16 @@ def build_correct_field_prompt(
     """Build prompt for single field correction (Stage 2)."""
     current_len = len(current_value)
     issue = "too_long" if current_len > max_len else "too_short"
-    return CORRECT_FIELD_PROMPT.format(
-        section=section,
-        field=field,
-        current_value=current_value,
-        current_len=current_len,
-        issue=issue,
-        min_len=min_len,
-        max_len=max_len,
-        mode=mode
-    )
+    prompt = CORRECT_FIELD_PROMPT
+    prompt = prompt.replace('{section}', section)
+    prompt = prompt.replace('{field}', field)
+    prompt = prompt.replace('{current_value}', current_value)
+    prompt = prompt.replace('{current_len}', str(current_len))
+    prompt = prompt.replace('{issue}', issue)
+    prompt = prompt.replace('{min_len}', str(min_len))
+    prompt = prompt.replace('{max_len}', str(max_len))
+    prompt = prompt.replace('{mode}', mode)
+    return prompt
 
 
 # =============================================================================
@@ -285,11 +285,16 @@ SEMANTIC_CHUNK_RECURSIVE_PROMPT = """你是一个教育PPT内容结构分析助�
 
 def build_semantic_chunk_prompt(content: str, max_chars: int) -> str:
     """Build prompt for semantic chunking."""
-    return SEMANTIC_CHUNK_PROMPT.format(content=content, max_chars=max_chars)
+    prompt = SEMANTIC_CHUNK_PROMPT
+    prompt = prompt.replace('{max_chars}', str(max_chars))
+    prompt = prompt.replace('{content}', content)
+    return prompt
 
 
 def build_semantic_chunk_recursive_prompt(content: str, current_len: int, max_chars: int) -> str:
     """Build prompt for recursive semantic chunking."""
-    return SEMANTIC_CHUNK_RECURSIVE_PROMPT.format(
-        content=content, current_len=current_len, max_chars=max_chars
-    )
+    prompt = SEMANTIC_CHUNK_RECURSIVE_PROMPT
+    prompt = prompt.replace('{max_chars}', str(max_chars))
+    prompt = prompt.replace('{current_len}', str(current_len))
+    prompt = prompt.replace('{content}', content)
+    return prompt
