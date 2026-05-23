@@ -1,0 +1,74 @@
+{
+  "cover": {
+    "project_name": "大模型架构与数据处理",
+    "task_num": "二",
+    "task_name": "大模型公开数据集收集与指令数据构造"
+  },
+  "introduction": {
+    "introduction_case": "以《山海经》神兽白泽为引，阐述让机器理解中文语义的挑战：从传统机器翻译的词不达意，到Transformer通过注意力机制实现上下文关联；再到大模型依赖高质量中文数据集进行分词与向量化，将汉字映射至高维向量空间，实现语义理解；最终通过指令数据对齐训练，赋予模型听懂指令、举一反三的能力。"
+  },
+  "thinking": {
+    "guiding_problem1": "计算机如何将无意义字符编码转化为可理解的语义？",
+    "guiding_problem2": "Transformer如何通过注意力机制实现跨句关联？",
+    "guiding_problem3": "中文大模型的认知深度取决于哪些关键因素？"
+  },
+  "start": {
+    "task_num": "二",
+    "task_name": "大模型公开数据集收集与指令数据构造"
+  },
+  "catalog_one": {
+    "task_num": "二",
+    "task_name": "大模型公开数据集收集与指令数据构造"
+  },
+  "description": {
+    "task_description": "可访问HuggingFace、ModelScope等公开数据集；理解JSON、CSV等存储格式；掌握Alpaca等指令格式；编写脚本构造结构化指令数据；使用Pandas、正则进行数据清洗与质量检查",
+    "task_requirements1": "能够访问常见公开数据集资源",
+    "task_requirements2": "理解并使用多种数据集存储格式",
+    "task_requirements3": "掌握Alpaca、ShareGPT等主流数据集组织格式",
+    "task_requirements4": "能够编写脚本或使用工具构造结构化指令数据",
+    "task_requirements5": "掌握数据清洗的方法与常用工具"
+  },
+  "catalog_two": {
+    "task_num": "二",
+    "task_name": "大模型公开数据集收集与指令数据构造"
+  },
+  "target": {
+    "task_target1": "能够识别并获取适用于不同训练阶段的大规模语言模型数据集",
+    "task_target2": "掌握常见数据集的存储与组织格式",
+    "task_target3": "能够根据实际需求构造高质量的指令数据",
+    "task_target4": "掌握数据清洗与检查的基本流程和工具使用方法",
+    "task_focus": "数据集识别、存储格式、指令数据构造、清洗检查全流程",
+    "task_difficulty": "高质量数据集构建核心技能的掌握与应用"
+  },
+  "catalog_three": {
+    "task_num": "二",
+    "task_name": "大模型公开数据集收集与指令数据构造"
+  },
+  "catalog_four": {
+    "task_num": "二",
+    "task_name": "大模型公开数据集收集与指令数据构造"
+  },
+  "catalog_five": {
+    "task_num": "二",
+    "task_name": "大模型公开数据集收集与指令数据构造"
+  },
+  "summary": {
+    "task_summary": "本任务涵盖大模型训练数据的全流程处理，包括数据集识别、存储格式（JSON/CSV）、指令数据构造（人工、模板、模型生成）及数据清洗（去重、过滤、字段检查）。重点包括多阶段数据需求差异、结构化字段设计及自动化清洗脚本开发，帮助读者掌握高质量数据集构建核心技能，为模型训练奠定数据基础"
+  },
+  "key_difficulties_summary": {
+    "key_summary1": "多阶段数据需求差异",
+    "key_summary2": "结构化字段设计",
+    "key_summary3": "自动化清洗脚本开发",
+    "difficulties_summary1": "不同训练阶段数据特点的把握",
+    "difficulties_summary2": "高质量指令数据的构造方法",
+    "difficulties_summary3": "大规模数据的清洗效率与质量"
+  },
+  "catalog_six": {
+    "task_num": "二",
+    "task_name": "大模型公开数据集收集与指令数据构造"
+  },
+  "expansion": {
+    "skill_practice": "数据获取：提取firefly.jsonl中NER前100条保存为ner_100.json，用Qwen生成3组问答保存为qwen_data.json。数据清洗：合并去重，过滤output长度<10或>500的条目，统一字段命名。格式转换：转为JSONL保存为final_dataset.jsonl",
+    "solving_ideas": "技能实践涵盖数据获取、整合、清洗、格式转换全流程。首先从 firefly.jsonl 提取 NER 数据，用 Qwen 生成问答对；然后合并去重，过滤长度异常数据，检查字段命名；最后转换为 JSONL 格式保存，完成数据集构建。"
+  }
+}

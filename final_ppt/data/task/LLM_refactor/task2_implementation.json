@@ -1,0 +1,28 @@
+{
+  "task_num": "2",
+  "task_title": "任务二 大模型公开数据集收集与指令数据构造",
+  "template_type": "task_implementation",
+  "heading4_count": 4,
+  "segments": [
+    {
+      "heading": "访问与下载公开数据集（ModelScope平台）",
+      "content_chunks": [],
+      "heading_chunk_count": 0
+    },
+    {
+      "heading": "对公开数据集进行预处理",
+      "content_chunks": [],
+      "heading_chunk_count": 0
+    },
+    {
+      "heading": "构造指令数据集",
+      "content_chunks": [],
+      "heading_chunk_count": 0
+    },
+    {
+      "heading": "指令数据集清洗检查",
+      "content_chunks": [],
+      "heading_chunk_count": 0
+    }
+  ]
+}

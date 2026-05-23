@@ -1,0 +1,28 @@
+{
+  "task_num": "1",
+  "task_title": "任务一 大模型基石——Transformer",
+  "template_type": "knowledge_reserve",
+  "heading4_count": 4,
+  "segments": [
+    {
+      "heading": "大模型概述",
+      "content_chunks": [],
+      "heading_chunk_count": 0
+    },
+    {
+      "heading": "认识Transformer模型",
+      "content_chunks": [],
+      "heading_chunk_count": 0
+    },
+    {
+      "heading": "编码器与解码器",
+      "content_chunks": [],
+      "heading_chunk_count": 0
+    },
+    {
+      "heading": "注意力机制",
+      "content_chunks": [],
+      "heading_chunk_count": 0
+    }
+  ]
+}

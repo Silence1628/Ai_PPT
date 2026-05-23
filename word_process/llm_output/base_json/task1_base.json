@@ -1,0 +1,74 @@
+{
+  "cover": {
+    "project_name": "智能体应用初探专项实战",
+    "task_num": "一",
+    "task_name": "设计并实现智能体工作流"
+  },
+  "introduction": {
+    "introduction_case": "某物流分拣中心引入新系统，要求从固定流程操作转变为智能决策：系统需自动判断条码污损包裹的清洁处理、易碎品的缓降滑道分流，并根据实时车流调整分拣优先级，实现从传统自动化向智能化自动化的升级。"
+  },
+  "thinking": {
+    "guiding_problem1": "传统自动化与智能化自动化的核心区别是什么",
+    "guiding_problem2": "新系统要稳定运行需要具备哪些关键功能",
+    "guiding_problem3": "用自然语言给系统下指令需要包含哪些要素"
+  },
+  "start": {
+    "task_num": "一",
+    "task_name": "设计并实现智能体工作流"
+  },
+  "catalog_one": {
+    "task_num": "一",
+    "task_name": "设计并实现智能体工作流"
+  },
+  "description": {
+    "task_description": "本任务旨在指导学员完成基于RAGFlow平台的智能问答助手搭建任务，并在项目中辨析智能体与工作流的概念，掌握二者的核心能力框架以及实际应用开发流程。",
+    "task_requirements1": "能准确区分智能体与工作流的适用场景",
+    "task_requirements2": "能根据任务特征做出合理的技术选型和搭配",
+    "task_requirements3": "能根据实际场景编写有效的系统提示词",
+    "task_requirements4": "能完成一个可交互的智能问答应用",
+    "task_requirements5": "能调整提示词和参数优化智能体"
+  },
+  "catalog_two": {
+    "task_num": "一",
+    "task_name": "设计并实现智能体工作流"
+  },
+  "target": {
+    "task_target1": "能区分智能体与工作流场景，做出合理技术选型",
+    "task_target2": "能编写有效提示词构建智能问答应用，并优化调整",
+    "task_target3": "认识到AI赋能传统产业升级的价值，具备开阔技术视野",
+    "task_target4": "主动思考如何将所学技能服务于国家智能制造与数字化转型战略",
+    "task_focus": "掌握有效的系统提示词编写方法",
+    "task_difficulty": "理解改变提示词和参数对模型输出的影响"
+  },
+  "catalog_three": {
+    "task_num": "一",
+    "task_name": "设计并实现智能体工作流"
+  },
+  "catalog_four": {
+    "task_num": "一",
+    "task_name": "设计并实现智能体工作流"
+  },
+  "catalog_five": {
+    "task_num": "一",
+    "task_name": "设计并实现智能体工作流"
+  },
+  "summary": {
+    "task_summary": "本任务不仅能完成基础智能问答助手的搭建，更重要的是理解：智能体开发并非简单调用模型，而是围绕业务目标进行场景设定、工作流搭建、提示词配置、测试验证和持续改进。通过搭建最小可运行应用，以评估指标发现不足，构成完整实训学习闭环。"
+  },
+  "key_difficulties_summary": {
+    "key_summary1": "智能体与工作流的区别",
+    "key_summary2": "RAGFlow可视化工作流搭建",
+    "key_summary3": "系统提示词编写方法",
+    "difficulties_summary1": "提示词参数对输出的影响",
+    "difficulties_summary2": "模型参数调试",
+    "difficulties_summary3": "评估指标体系建设"
+  },
+  "catalog_six": {
+    "task_num": "一",
+    "task_name": "设计并实现智能体工作流"
+  },
+  "expansion": {
+    "skill_practice": "针对“企业设备报修工单助手”构建智能体，思考这个场景下需要的功能，以及配合设定的系统提示词和参数，并仿照实操过程建立版本迭代流程。设定其他参数，调节智能体的回答风格，总结并评价输出结果。",
+    "solving_ideas": "技能实践题要求学员针对具体场景构建智能体，通过设定系统提示词和参数，建立版本迭代流程，并调节模型参数评价输出结果，深化对智能体工作流开发的理解。"
+  }
+}

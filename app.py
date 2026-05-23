@@ -24,14 +24,14 @@ def step1_word_to_json_and_export():
     original_export_main()
 
 
-def step2_padding():
-    """Padding: original_content → padding_content"""
+def step2_llm_chunk():
+    """LLM 语义切分: markdown_content + LLM_refactor → LLM_refactor"""
     print("\n" + "=" * 70)
-    print("[Step 2] Padding: original_content → padding_content")
+    print("[Step 2] LLM 语义切分: markdown_content + LLM_refactor → LLM_refactor")
     print("=" * 70)
 
-    from scripts.padding import main as padding_main
-    padding_main()
+    from scripts.llm_chunk import main as llm_chunk_main
+    llm_chunk_main()
 
 
 def step3_render_and_mapping():
@@ -45,11 +45,11 @@ def step3_render_and_mapping():
     run_json_to_ppt()
 
     # 生成 mapping
-    from PPT_Perception.content_process import MappingProcessor
+    from final_ppt.content_process import MappingProcessor
 
-    KNOWLEDGE_PADDING_DIR = PROJECT_ROOT / "PPT_Perception" / "data" / "knowledge" / "padding_content"
-    TASK_PADDING_DIR = PROJECT_ROOT / "PPT_Perception" / "data" / "task" / "padding_content"
-    MAPPING_OUTPUT_DIR = PROJECT_ROOT / "PPT_Perception" / "mapping"
+    KNOWLEDGE_PADDING_DIR = PROJECT_ROOT / "word_process" / "llm_input"
+    TASK_PADDING_DIR = PROJECT_ROOT / "word_process" / "llm_input"
+    MAPPING_OUTPUT_DIR = PROJECT_ROOT / "final_ppt" / "mapping"
 
     mapping_processor = MappingProcessor(
         ppt_file=None,
@@ -82,11 +82,11 @@ def step4_assemble_and_fill():
     print("[Step 4] Assemble → temp PPT → Fill 填充")
     print("=" * 70)
 
-    from PPT_Perception.content_process import AssembleProcessor, FillProcessor
+    from final_ppt.content_process import AssembleProcessor, FillProcessor
 
-    TEMPLATE_DIR = PROJECT_ROOT / "PPT_Perception" / "content_process" / "template"
-    TEMP_OUTPUT_DIR = PROJECT_ROOT / "PPT_Perception" / "temp"
-    MAPPING_DIR = PROJECT_ROOT / "PPT_Perception" / "mapping"
+    TEMPLATE_DIR = PROJECT_ROOT / "final_ppt" / "content_process" / "template"
+    TEMP_OUTPUT_DIR = PROJECT_ROOT / "final_ppt" / "temp"
+    MAPPING_DIR = PROJECT_ROOT / "final_ppt" / "mapping"
 
     # Assemble: 生成 temp PPTX
     assemble_processor = AssembleProcessor(TEMPLATE_DIR, TEMP_OUTPUT_DIR)
@@ -107,8 +107,8 @@ def step5_integrate_ppt():
 
     from scripts.integrate import IntegrateProcessor
 
-    BASE_PPT_DIR = PROJECT_ROOT / "PPT_Framework" / "base_ppt"
-    TEMP_DIR = PROJECT_ROOT / "PPT_Perception" / "temp"
+    BASE_PPT_DIR = PROJECT_ROOT / "base_ppt" / "base_ppt"
+    TEMP_DIR = PROJECT_ROOT / "final_ppt" / "temp"
     OUTPUT_DIR = PROJECT_ROOT / "output"
 
     processor = IntegrateProcessor(BASE_PPT_DIR, TEMP_DIR, OUTPUT_DIR)
@@ -122,7 +122,7 @@ def main():
 
     try:
         step1_word_to_json_and_export()
-        step2_padding()
+        step2_llm_chunk()
         step3_render_and_mapping()
         step4_assemble_and_fill()
         step5_integrate_ppt()

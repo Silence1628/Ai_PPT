@@ -1,0 +1,74 @@
+{
+  "cover": {
+    "project_name": "智能体应用初探专项实战",
+    "task_num": "二",
+    "task_name": "提示词工程"
+  },
+  "introduction": {
+    "introduction_case": "某物流分拣中心引入新系统，要求从固定流程操作转变为智能决策：系统需自动判断条码污损包裹的清洁处理、易碎品的缓降滑道分流，并根据实时车流调整分拣优先级，实现从传统自动化向智能化自动化的升级。"
+  },
+  "thinking": {
+    "guiding_problem1": "传统自动化与智能化自动化的核心区别是什么",
+    "guiding_problem2": "新系统要稳定运行需要具备哪些关键功能",
+    "guiding_problem3": "用自然语言给系统下指令需要包含哪些要素"
+  },
+  "start": {
+    "task_num": "二",
+    "task_name": "提示词工程"
+  },
+  "catalog_one": {
+    "task_num": "二",
+    "task_name": "提示词工程"
+  },
+  "description": {
+    "task_description": "本章旨在帮助学员建立提示词工程的基础认知，理解提示词在智能体系统中的核心作用，掌握提示词工程的基本目标、基本原理和基本工作环境。通过本章学习，学员将认识到：提示词并不是对模型\"随口一说\"，而是对智能体行为边界、推理路径和输出形式的显式设计。",
+    "task_requirements1": "能从智能体系统设计视角理解提示词的价值",
+    "task_requirements2": "能围绕确定性、逻辑性、效率三个维度分析",
+    "task_requirements3": "能使用RAGFlow工作流开展提示词测试",
+    "task_requirements4": "能根据具体场景判断如何构建提示词信息",
+    "task_requirements5": "理解提示词如何影响智能体的决策过程与输出稳定性"
+  },
+  "catalog_two": {
+    "task_num": "二",
+    "task_name": "提示词工程"
+  },
+  "target": {
+    "task_target1": "理解提示词如何影响智能体的决策过程与输出稳定性",
+    "task_target2": "掌握提示词工程的基本目标、基本原理和基本工作环境",
+    "task_target3": "掌握提示词工程的基本目标、基本原理和基本工作环境",
+    "task_target4": "建立\"提示词即行为设计\"的意识",
+    "task_focus": "理解提示词如何影响智能体的决策过程与输出稳定性",
+    "task_difficulty": "从\"大模型会生成文字\"过渡到\"提示词在塑造模型行为\"这一系统化认知"
+  },
+  "catalog_three": {
+    "task_num": "二",
+    "task_name": "提示词工程"
+  },
+  "catalog_four": {
+    "task_num": "二",
+    "task_name": "提示词工程"
+  },
+  "catalog_five": {
+    "task_num": "二",
+    "task_name": "提示词工程"
+  },
+  "summary": {
+    "task_summary": "提示词并不是模型交互中的附属品，而是Agent行为设计的核心入口。它决定了模型如何理解任务、如何分配注意力、如何组织推理、如何控制输出。提示词工程的目标不是把话说得更华丽，而是把要求说得更明确、更稳定、更高效。"
+  },
+  "key_difficulties_summary": {
+    "key_summary1": "提示词即行为设计",
+    "key_summary2": "确定性、逻辑性、效率三目标",
+    "key_summary3": "结构化与版本管理",
+    "difficulties_summary1": "系统化认知模型行为塑造",
+    "difficulties_summary2": "概率生成机制理解",
+    "difficulties_summary3": "清晰上下文与约束收紧"
+  },
+  "catalog_six": {
+    "task_num": "二",
+    "task_name": "提示词工程"
+  },
+  "expansion": {
+    "skill_practice": "为任务实施中的系统提示词添加few-shot提示，判断一下对回复结果有无影响，并总结原因。如果要为一个企业客服Agent写第一版系统提示词，你认为最不能缺少的三项约束是什么？尝试构架一个这样的Agent，对比其他同学的回复结果，看看谁的想法更好。",
+    "solving_ideas": "通过few-shot示例为模型提供输入输出模板，帮助模型理解每个维度的具体要求，提升输出稳定性。针对企业客服Agent，应明确：角色身份界定、业务范围限定、输出格式规范这三项核心约束。"
+  }
+}

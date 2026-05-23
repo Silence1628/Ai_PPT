@@ -1,0 +1,74 @@
+{
+  "cover": {
+    "project_name": "大模型架构与数据处理",
+    "task_num": "一",
+    "task_name": "大模型基石——Transformer"
+  },
+  "introduction": {
+    "introduction_case": "从《山海经》白泽神兽案例看机器理解中文语义的演进：传统机器翻译词不达意，Transformer通过注意力机制实现上下文关联；大模型依赖高质量中文数据集进行分词与向量化，将汉字映射至高维向量空间实现语义理解；最终通过指令数据对齐训练，赋予模型指令遵循与举一反三能力。"
+  },
+  "thinking": {
+    "guiding_problem1": "计算机如何将无意义字符编码转化为可理解的语义？",
+    "guiding_problem2": "Transformer如何通过注意力机制实现跨句关联？",
+    "guiding_problem3": "中文大模型的认知深度取决于哪些关键因素？"
+  },
+  "start": {
+    "task_num": "一",
+    "task_name": "大模型基石——Transformer"
+  },
+  "catalog_one": {
+    "task_num": "一",
+    "task_name": "大模型基石——Transformer"
+  },
+  "description": {
+    "task_description": "理解Transformer整体架构，明确编码器和解码器的功能与差异；掌握注意力机制概念和计算过程，使用bertviz可视化；用PyTorch实现简化版Transformer并验证输出。",
+    "task_requirements1": "理解Transformer模型的整体架构",
+    "task_requirements2": "明确编码器和解码器各自的功能与差异",
+    "task_requirements3": "掌握注意力机制的基本概念和计算过程",
+    "task_requirements4": "利用bertviz工具进行可视化分析",
+    "task_requirements5": "使用PyTorch实现一个简化版Transformer"
+  },
+  "catalog_two": {
+    "task_num": "一",
+    "task_name": "大模型基石——Transformer"
+  },
+  "target": {
+    "task_target1": "理解Transformer基本原理及其在大模型架构中的核心地位。",
+    "task_target2": "能够区分编码器和解码器的功能，并理解其协同工作机制",
+    "task_target3": "能够描述注意力机制的作用及其实现方式，并进行可视化分析",
+    "task_target4": "能够搭建简单的Transformer模型，测试模型输入与输出",
+    "task_focus": "编码器-解码器结构、自注意力机制与多头注意力",
+    "task_difficulty": "注意力机制的计算过程与可视化分析"
+  },
+  "catalog_three": {
+    "task_num": "一",
+    "task_name": "大模型基石——Transformer"
+  },
+  "catalog_four": {
+    "task_num": "一",
+    "task_name": "大模型基石——Transformer"
+  },
+  "catalog_five": {
+    "task_num": "一",
+    "task_name": "大模型基石——Transformer"
+  },
+  "summary": {
+    "task_summary": "本任务讲解Transformer核心架构，包括编码器-解码器结构、自注意力和多头注意力机制。实践环节让读者掌握简化版Transformer搭建和注意力可视化。Transformer的并行计算和全局建模能力使其成为大语言模型基础，理解其原理对掌握NLP技术至关重要。"
+  },
+  "key_difficulties_summary": {
+    "key_summary1": "编码器-解码器结构",
+    "key_summary2": "自注意力机制原理",
+    "key_summary3": "多头注意力机制",
+    "difficulties_summary1": "注意力机制计算过程",
+    "difficulties_summary2": "模型实现与测试",
+    "difficulties_summary3": "可视化分析方法"
+  },
+  "catalog_six": {
+    "task_num": "一",
+    "task_name": "大模型基石——Transformer"
+  },
+  "expansion": {
+    "skill_practice": "用PyTorch实现简化Transformer编码器层，包含自注意力和前馈网络，测试输入输出维度。用bertviz可视化BERT注意力权重，观察句子中关键动词的关注对象。",
+    "solving_ideas": "通过PyTorch实践掌握简化版Transformer编码器层的搭建，理解自注意力机制和前馈神经网络的工作原理；使用bertviz工具对BERT模型进行注意力权重可视化，直观观察模型如何关注句子中的关键信息，验证理论学习的有效性。"
+  }
+}

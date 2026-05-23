@@ -1,0 +1,28 @@
+{
+  "task_num": "3",
+  "task_title": "任务三 大模型文本分词与向量化",
+  "template_type": "knowledge_reserve",
+  "heading4_count": 4,
+  "segments": [
+    {
+      "heading": "大模型处理自然语言输入的流程",
+      "content_chunks": [],
+      "heading_chunk_count": 0
+    },
+    {
+      "heading": "使用分词器（Tokenizer）切分并编码文本",
+      "content_chunks": [],
+      "heading_chunk_count": 0
+    },
+    {
+      "heading": "词嵌入（Word Embedding）——赋予语义信息",
+      "content_chunks": [],
+      "heading_chunk_count": 0
+    },
+    {
+      "heading": "位置编码（Positional Encoding）——引入顺序信息",
+      "content_chunks": [],
+      "heading_chunk_count": 0
+    }
+  ]
+}

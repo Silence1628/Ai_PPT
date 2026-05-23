@@ -1,0 +1,74 @@
+{
+  "cover": {
+    "project_name": "大模型架构与数据处理",
+    "task_num": "三",
+    "task_name": "大模型文本分词与向量化"
+  },
+  "introduction": {
+    "introduction_case": "以《山海经》神兽白泽为引，阐述让机器理解中文语义的挑战：从传统机器翻译的词不达意，到Transformer通过注意力机制实现上下文关联；再到大模型依赖高质量中文数据集进行分词与向量化，将汉字映射至高维向量空间，实现语义理解；最终通过指令数据对齐训练，赋予模型听懂指令、举一反三的能力。"
+  },
+  "thinking": {
+    "guiding_problem1": "计算机如何将无意义字符编码转化为可理解的语义？",
+    "guiding_problem2": "Transformer如何通过注意力机制实现跨句关联？",
+    "guiding_problem3": "中文大模型的认知深度取决于哪些关键因素？"
+  },
+  "start": {
+    "task_num": "三",
+    "task_name": "大模型文本分词与向量化"
+  },
+  "catalog_one": {
+    "task_num": "三",
+    "task_name": "大模型文本分词与向量化"
+  },
+  "description": {
+    "task_description": "比较不同分词器的输出结果，分析其在切分特定领域词汇时的表现。实现词嵌入与位置编码的提取，利用PCA降维技术进行可视化分析。结合词嵌入与位置编码，构建Transformer模型的最终输入表示，并分析其对模型性能的影响。",
+    "task_requirements1": "安装配置jieba、BERT和Qwen分词工具",
+    "task_requirements2": "完成文本的分词处理",
+    "task_requirements3": "比较不同分词器的输出结果，分析其在切分特定领域词汇时的表现",
+    "task_requirements4": "实现词嵌入与位置编码的提取，利用PCA降维技术进行可视化分析",
+    "task_requirements5": "结合词嵌入与位置编码构建Transformer输入"
+  },
+  "catalog_two": {
+    "task_num": "三",
+    "task_name": "大模型文本分词与向量化"
+  },
+  "target": {
+    "task_target1": "能够理解分词的基本原理及其在自然语言处理中的重要性",
+    "task_target2": "能够使用不同的分词工具实现分词任务，并比较不同工具的优缺点",
+    "task_target3": "掌握Transformer词嵌入与位置编码核心机制",
+    "task_target4": "能够通过代码实践完成词嵌入向量与位置编码的可视化分析",
+    "task_focus": "掌握分词技术原理与词嵌入位置编码机制",
+    "task_difficulty": "词嵌入与位置编码的可视化分析实践"
+  },
+  "catalog_three": {
+    "task_num": "三",
+    "task_name": "大模型文本分词与向量化"
+  },
+  "catalog_four": {
+    "task_num": "三",
+    "task_name": "大模型文本分词与向量化"
+  },
+  "catalog_five": {
+    "task_num": "三",
+    "task_name": "大模型文本分词与向量化"
+  },
+  "summary": {
+    "task_summary": "本任务介绍jieba、BERT、Qwen分词器原理与应用，验证表现。解析Transformer词嵌入与位置编码机制，利用可视化技术分析分布规律，掌握分词技术，理解模型输入构造，为后续应用奠定基础。"
+  },
+  "key_difficulties_summary": {
+    "key_summary1": "掌握三种分词器原理",
+    "key_summary2": "理解词嵌入与位置编码的核心机制",
+    "key_summary3": "学会使用PCA降维进行词嵌入可视化分析",
+    "difficulties_summary1": "不同分词器在特定领域词汇切分的表现分析",
+    "difficulties_summary2": "词嵌入向量与位置编码的原理理解",
+    "difficulties_summary3": "Transformer输入表示构建"
+  },
+  "catalog_six": {
+    "task_num": "三",
+    "task_name": "大模型文本分词与向量化"
+  },
+  "expansion": {
+    "skill_practice": "使用BERT Tokenizer对一段英文文本进行分词，观察其如何处理长词和复合词。实现词嵌入的PCA降维可视化，展示“人工智能”、“机器学习”、“深度学习”等词在二维空间中的分布。",
+    "solving_ideas": "BERT Tokenizer处理英文时先将文本转为小写，根据词汇表进行子词划分。词嵌入PCA降维可视化需获取预训练模型词向量，选取目标词汇后使用PCA投影到二维空间，通过散点图展示词汇分布，语义相似词汇在空间中距离更近。"
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "cover": {
+    "project_name": "智能体应用初探专项实战",
+    "task_num": "三",
+    "task_name": "工作流编排与对话状态管理"
+  },
+  "introduction": {
+    "introduction_case": "某物流分拣中心引入新系统，要求从固定流程操作转变为智能决策：系统需自动判断条码污损包裹的清洁处理、易碎品的缓降滑道分流，并根据实时车流调整分拣优先级，实现从传统自动化向智能化自动化的升级。"
+  },
+  "thinking": {
+    "guiding_problem1": "传统自动化与智能化自动化的核心区别是什么",
+    "guiding_problem2": "新系统要稳定运行需要具备哪些关键功能",
+    "guiding_problem3": "用自然语言给系统下指令需要包含哪些要素"
+  },
+  "start": {
+    "task_num": "三",
+    "task_name": "工作流编排与对话状态管理"
+  },
+  "catalog_one": {
+    "task_num": "三",
+    "task_name": "工作流编排与对话状态管理"
+  },
+  "description": {
+    "task_description": "本章旨在帮助学员从“会写Prompt”过渡到“会搭工作流”，理解工作流（Workflow）与对话流（Chatflow）的核心差异，掌握节点组件的功能定位、变量传递方式、逻辑控制流以及多轮对话中的记忆与路由机制。",
+    "task_requirements1": "能够说清工作流中常见节点的作用、适用场景与配置要点",
+    "task_requirements2": "能够理解变量在节点间的传递机制，并正确使用{{variable}}引用数据",
+    "task_requirements3": "能够区分Workflow与Chatflow，理解多轮对话为什么必须引入会话状态与记忆机制",
+    "task_requirements4": "能够设计一个具备意图识别、澄清补槽、上下文记忆和条件路由能力的对话型工作流",
+    "task_requirements5": "能够搭建基础的提示词实验环境，并具备提示词版本管理意识"
+  },
+  "catalog_two": {
+    "task_num": "三",
+    "task_name": "工作流编排与对话状态管理"
+  },
+  "target": {
+    "task_target1": "能从系统编排视角理解Agent，不再把大模型当作唯一能力中心",
+    "task_target2": "能围绕“节点职责清晰、变量契约明确、控制逻辑稳定”三个维度评估一个工作流设计是否合理",
+    "task_target3": "能在Chatflow中配置基础记忆机制，并实现简单的意图路由与多轮澄清闭环",
+    "task_target4": "能说清工作流中常见节点的作用、适用场景与配置要点",
+    "task_focus": "掌握节点编排、变量传递、控制流设计与对话状态管理的基本方法",
+    "task_difficulty": "从提示词调优思维过渡到系统编排思维，真正理解变量、上下文、分支和记忆在Agent中的联动关系"
+  },
+  "catalog_three": {
+    "task_num": "三",
+    "task_name": "工作流编排与对话状态管理"
+  },
+  "catalog_four": {
+    "task_num": "三",
+    "task_name": "工作流编排与对话状态管理"
+  },
+  "catalog_five": {
+    "task_num": "三",
+    "task_name": "工作流编排与对话状态管理"
+  },
+  "summary": {
+    "task_summary": "本任务的核心是帮助学员建立工作流思维：Agent的稳定性，不只来自模型，也来自节点职责是否清晰、变量传递是否准确、控制流是否合理、记忆管理是否克制。本任务解决的问题是Agent如何在系统里按流程做。"
+  },
+  "key_difficulties_summary": {
+    "key_summary1": "Prompt决定单点行为，Workflow决定系统执行",
+    "key_summary2": "变量是工作流的数据血管，不是随手写的占位符",
+    "key_summary3": "Chatflow的关键价值在于把会话状态纳入系统设计",
+    "difficulties_summary1": "从提示词调优思维过渡到系统编排思维",
+    "difficulties_summary2": "真正理解变量、上下文、分支和记忆的联动关系",
+    "difficulties_summary3": "掌握节点编排与变量传递的基本方法"
+  },
+  "catalog_six": {
+    "task_num": "三",
+    "task_name": "工作流编排与对话状态管理"
+  },
+  "expansion": {
+    "skill_practice": "这个项目只靠一个大Prompt能不能完成？尝试一下构建。在这个案例中，哪些问题必须交给LLM，哪些问题其实更适合交给规则和模板？这个案例还有哪些部分可以进一步优化？",
+    "solving_ideas": "首先尝试用单一Prompt实现相同功能，对比工作流方案的效果差异。需要明确区分：语义理解、意图识别等模糊任务适合LLM；规则明确的数据验证、条件判断、数值计算适合规则和模板；多轮对话的状态管理需要系统设计而非单纯依赖模型能力。优化方向可考虑槽位填充效率、历史记忆压缩、异常处理机制等方面。"
+  }
+}
