@@ -20,7 +20,7 @@ CHUNK1_PROMPT = """你是一个教育PPT内容提取助手。请从以下 Word �
 
 {{
   "project_name": "项目名称（从【标题1】提取，去掉前缀如"项目一"），copy模式，15-20字",
-  "introduction_case": "引导案例完整内容，summary模式，1-210字",
+  "introduction_case": "根据原文案例内容，重新撰写一段完整的引导案例叙述。必须包含：场景描述、矛盾冲突、3个思考问题。要求200-220字，内容丰满细节充实，不要干瘪概括，1-220字",
   "guiding_problem1": "从案例提炼的第1个引导思考问题（必须以问号结尾），summary模式，1-30字",
   "guiding_problem2": "从案例提炼的第2个引导思考问题（必须以问号结尾），summary模式，1-30字",
   "guiding_problem3": "从案例提炼的第3个引导思考问题（必须以问号结尾），summary模式，1-30字"
@@ -57,11 +57,11 @@ chunk1_guiding_problem3: "{guiding_problem3}"
   "cover": {{
     "project_name": "copy模式，直接复制chunk1提取的项目名称，15-20字",
     "task_num": "copy模式，从标题2提取任务编号（如'一'），1-3字",
-    "task_name": "copy模式，从标题2提取任务名称，20-40字"
+    "task_name": "copy模式，从标题2提取任务名称（去掉\"任务X\"编号前缀和多余空格），5-30字"
   }},
   "introduction": {{
-    "introduction_case": "summary模式，引用chunk1素材，1-210字"
-  },
+    "introduction_case": "直接引用chunk1提取的引导案例（已由LLM重新撰写为200-220字完整版本），1-220字"
+  }},
   "thinking": {{
     "guiding_problem1": "summary模式，引用chunk1素材（必须以问号结尾），1-30字",
     "guiding_problem2": "summary模式，引用chunk1素材（必须以问号结尾），1-30字",
@@ -69,7 +69,7 @@ chunk1_guiding_problem3: "{guiding_problem3}"
   }},
   "start": {{
     "task_num": "copy模式，从标题2提取，1-3字",
-    "task_name": "copy模式，从标题2提取，20-40字"
+    "task_name": "copy模式，从标题2提取（去掉\"任务X\"编号前缀），5-30字"
   }},
   "catalog_one": {{
     "task_num": "copy模式，1-3字",
@@ -112,7 +112,7 @@ chunk1_guiding_problem3: "{guiding_problem3}"
     "task_difficulty": "copy模式，综合学习目标和任务描述总结难点，1-30字（必须以分号结尾）"
   }},
   "summary": {{
-    "task_summary": "summary模式，从【任务小结】第一段提炼，1-140字"
+    "task_summary": "raw_copy模式，从【任务小结】第一段直接复制原文，不做任何提炼改写，1-140字"
   }},
   "key_difficulties_summary": {{
     "key_summary1": "summary模式，跨三块内容总结关键点，1-20字（必须以分号结尾）",
@@ -222,79 +222,69 @@ def build_correct_field_prompt(
 
 
 # =============================================================================
-# Content Semantic Chunking - Stage 1: 语义切分
+# Perception Semantic Chunking: LLM理解+重构段落
 # =============================================================================
 
-SEMANTIC_CHUNK_PROMPT = """你是一个教育PPT内容结构分析助手。请将以下文本切分为语义完整的片段。
+SEMANTIC_CHUNK_PROMPT = """你是一个教育PPT内容编辑。请理解以下教材内容的知识逻辑，然后将每个小节的内容重构为独立的PPT页面段落。
 
-## 待切分文本
+## 当前主题：{parent_title}
+
 {content}
 
-## 容量约束
-每个片段不超过 {max_chars} 个字符。字符统计规则：
-- 中文字符每字=1
-- 英文每字母=1
-- 空格和换行符不计入
+## 重构要求
+1. **理解优先**：先理解每个小节讲的是什么知识点，知识点之间有什么逻辑关系（递进/并列/对比/因果）
+2. **独立成段**：每个小节独立输出，重构为1~3个段落，每个段落约300字。内容少的1个段落就够了，内容丰富的可以2~3个段落
+3. **保留知识点**：原文中的所有关键概念、定义、对比关系、例子必须保留，不能遗漏
+4. **流畅叙述**：用连贯的叙述重组内容，而非简单拼接原文；表结构转为文字描述
+5. **去冗余**：删除"如图X-X-X所示""从下表可以看出"等指向性语句和图表编号引用
 
-## 切分原则（按优先级排序）
-1. **段落边界优先**：在自然段落结束处切分
-2. **主题切换次之**：在子标题或话题变换处切分
-3. **句末候补**：实在无法在段落处切分时，选择完整句子末尾切分
-4. **不切断句子**：绝对不能在句子中间切分
-5. **保持语义完整**：每个片段应是一个独立语义单元
-
-## 输出要求
-1. 只输出 JSON，不要其他文字
-2. 返回格式：
+## 输出格式
+只返回 JSON：
 {{
-  "chunks": [
-    {{"content": "第一个片段内容（不超过{max_chars}字符）", "boundary": "段落/句子/主题"}},
-    {{"content": "第二个片段内容", "boundary": "..."}}
-  ]
-}}
-3. 如果原文不超过{max_chars}字符，直接返回单片段
-4. 片段数量不限制，以语义完整性为准"""
-
-
-# =============================================================================
-# Content Semantic Chunking - Stage 2: 递归切分（当单片段仍超限）
-# =============================================================================
-
-SEMANTIC_CHUNK_RECURSIVE_PROMPT = """你是一个教育PPT内容结构分析助手。请将以下过长片段进一步切分。
-
-## 当前片段（长度：{current_len} 字符，超限：{max_chars}）
-{content}
-
-## 容量约束
-每个片段不超过 {max_chars} 个字符。
-
-## 切分原则
-1. 在段落或句子边界处切分
-2. 绝对不能在句子中间切断
-3. 保持语义完整性
-
-## 输出要求
-只输出JSON：
-{{
-  "chunks": [
-    {{"content": "第一个片段内容", "boundary": "段落/句子"}},
-    {{"content": "第二个片段内容", "boundary": "..."}}
+  "h4_sections": [
+    {{
+      "title": "小节标题（原文H4标题）",
+      "paragraphs": [
+        "重构后的段落1（约300字）",
+        "重构后的段落2（约300字）"
+      ]
+    }}
   ]
 }}"""
 
 
-def build_semantic_chunk_prompt(content: str, max_chars: int) -> str:
-    """Build prompt for semantic chunking."""
+SEMANTIC_CHUNK_RECURSIVE_PROMPT = """你是一个教育PPT内容编辑。以下段落需要拆分为多个约300字的独立段落。
+
+## 待处理段落
+{content}
+
+## 要求
+1. 在语义完整处拆分，每个段落约300字
+2. 不能用截断的方式，必须重新组织语言
+3. 每个段落是一个自洽的知识单元
+
+## 输出格式
+只返回 JSON：
+{{
+  "paragraphs": ["段落1", "段落2", ...]
+}}"""
+
+
+def build_semantic_chunk_prompt(parent_title: str, h4_contents: list[dict]) -> str:
+    """Build prompt for semantic restructuring. Sends all H4s under one H3 together."""
+    parts = []
+    for h4 in h4_contents:
+        parts.append(f"### {h4['title']}\n{h4['content']}")
+    content_block = '\n\n'.join(parts)
+
     prompt = SEMANTIC_CHUNK_PROMPT
-    prompt = prompt.replace('{max_chars}', str(max_chars))
-    prompt = prompt.replace('{content}', content)
+    prompt = prompt.replace('{parent_title}', parent_title)
+    prompt = prompt.replace('{content}', content_block)
     return prompt
 
 
-def build_semantic_chunk_recursive_prompt(content: str, current_len: int, max_chars: int) -> str:
-    """Build prompt for recursive semantic chunking."""
+def build_semantic_chunk_recursive_prompt(content: str) -> str:
+    """Build prompt for recursive paragraph splitting."""
     prompt = SEMANTIC_CHUNK_RECURSIVE_PROMPT
-    prompt = prompt.replace('{max_chars}', str(max_chars))
-    prompt = prompt.replace('{current_len}', str(current_len))
     prompt = prompt.replace('{content}', content)
     return prompt

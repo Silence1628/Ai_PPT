@@ -104,13 +104,17 @@ def step5_base_json():
     print("=" * 70)
 
     base_json_dir = PROJECT_ROOT / "word_process" / "llm_output" / "base_json"
-    files = sorted(base_json_dir.glob("*.json")) if base_json_dir.exists() else []
+    files = []
+    if base_json_dir.exists():
+        # Support both flat and project subdirectory
+        files = sorted(base_json_dir.glob("*.json"))
+        if not files:
+            for proj in sorted(base_json_dir.glob("*/")):
+                files.extend(sorted(proj.glob("*.json")))
     if files:
-        print(f"  已有 {len(files)} 个 base JSON：")
-        for f in files:
-            print(f"    - {f.name}")
+        print(f"  已有 {len(files)} 个 base JSON")
     else:
-        print("  [WARN] 未找到 base_json/*.json，需要运行 scripts/md_to_json.py")
+        print("  [WARN] 未找到 base_json，需要运行 scripts/md_to_json.py")
 
 
 # =============================================================================
@@ -216,10 +220,10 @@ def step9_assemble():
     import win32com.client
     import pythoncom
     from collections import OrderedDict
-    from final_ppt.content_process.assemble import AssembleProcessor
+    from perception_ppt.content_process.assemble import AssembleProcessor
 
-    template_dir = PROJECT_ROOT / "final_ppt" / "content_process" / "template"
-    temp_dir = PROJECT_ROOT / "final_ppt" / "temp"
+    template_dir = PROJECT_ROOT / "perception_ppt" / "content_process" / "template"
+    temp_dir = PROJECT_ROOT / "perception_ppt" / "perception_output"
     padding_base = PROJECT_ROOT / "word_process" / "llm_output" / "perception_json"
 
     processor = AssembleProcessor(template_dir, temp_dir)
@@ -283,9 +287,9 @@ def step10_fill():
 
     import win32com.client
     import pythoncom
-    from final_ppt.content_process.fill import FillProcessor
+    from perception_ppt.content_process.fill import FillProcessor
 
-    temp_dir = PROJECT_ROOT / "final_ppt" / "temp"
+    temp_dir = PROJECT_ROOT / "perception_ppt" / "perception_output"
     padding_base = PROJECT_ROOT / "word_process" / "llm_output" / "perception_json"
 
     filler = FillProcessor(temp_dir)
@@ -348,7 +352,7 @@ def step11_integrate():
     from scripts.integrate import IntegrateProcessor
 
     base_ppt_dir = PROJECT_ROOT / "base_ppt" / "base_output"
-    temp_dir = PROJECT_ROOT / "final_ppt" / "temp"
+    temp_dir = PROJECT_ROOT / "perception_ppt" / "perception_output"
     output_dir = PROJECT_ROOT / "output"
 
     processor = IntegrateProcessor(base_ppt_dir, temp_dir, output_dir)

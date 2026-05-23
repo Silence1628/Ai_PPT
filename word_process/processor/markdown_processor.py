@@ -95,6 +95,7 @@ class MarkdownChunkProcessor:
         print(f"[PROCESSOR] 项目md: {project_md.name}")
         print(f"[PROCESSOR] 任务数量: {len(task_files)}")
 
+        self._current_project_name = project_folder.name
         self.total_tokens = 0
 
         # Stage 1: 处理 chunk1（项目介绍+引导案例）
@@ -215,10 +216,17 @@ class MarkdownChunkProcessor:
         # 填充缺失的 task_requirements
         output_data = self._fill_task_requirements_from_targets(output_data)
 
+        # 用原文直接覆盖 task_summary（不需要 LLM 处理，避免压缩改写）
+        original_summary = self._extract_task_summary(content)
+        if original_summary:
+            output_data.setdefault("summary", {})["task_summary"] = self._truncate_at_sentence(original_summary, 140)
+
         # 按 field order 重排列
         ordered_output = {k: output_data[k] for k in TASK_JSON_FIELD_ORDER if k in output_data}
 
-        output_path = self.output_dir / f"task{index}_base.json"
+        out_subdir = self.output_dir / self._current_project_name
+        out_subdir.mkdir(parents=True, exist_ok=True)
+        output_path = out_subdir / f"task{index}_base.json"
         with open(output_path, "w", encoding="utf-8") as f:
             json.dump(ordered_output, f, ensure_ascii=False, indent=2)
 
@@ -226,6 +234,38 @@ class MarkdownChunkProcessor:
         print(f"[TASK {index}] Stage 1 完成: {output_path.name}，耗时 {elapsed:.1f}s，tokens: {total_task_tokens}")
         self.total_tokens += total_task_tokens
         return output_path
+
+    @staticmethod
+    def _truncate_at_sentence(text: str, max_len: int) -> str:
+        """按句子边界截断文本，不超过 max_len"""
+        if len(text) <= max_len:
+            return text
+        # 在 max_len 范围内找最后一个句尾标点
+        cut = max_len
+        for sep in ['。', '？', '！', '；', '\n']:
+            pos = text[:max_len].rfind(sep)
+            if pos > cut // 2:  # 至少保留一半
+                cut = pos + 1
+                break
+        return text[:cut]
+
+    def _extract_task_summary(self, content: str) -> str:
+        """从 markdown 的【任务小结】段落提取原文（不经过 LLM）"""
+        idx = content.find('【任务小结】')
+        if idx < 0:
+            return ""
+        after = content[idx:]
+        lines = after.split('\n')
+        summary_parts = []
+        for line in lines[1:]:
+            stripped = line.strip()
+            if stripped.startswith('##') or stripped.startswith('###') or stripped.startswith('【'):
+                break
+            if stripped:
+                summary_parts.append(stripped)
+            elif summary_parts:
+                break
+        return '\n'.join(summary_parts)
 
     def _extract_title_from_filename(self, filename: str, content: str) -> str:
         """从 task md 文件名和内容提取标题"""

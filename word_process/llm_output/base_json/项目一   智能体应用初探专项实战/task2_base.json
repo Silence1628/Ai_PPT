@@ -1,0 +1,74 @@
+{
+  "cover": {
+    "project_name": "智能体应用初探专项实战",
+    "task_num": "二",
+    "task_name": "提示词工程"
+  },
+  "introduction": {
+    "introduction_case": "某物流分拣中心每天处理上万件包裹，从卸货到装车需经过扫码、称重、分拣、复核等固定步骤，操作员只需照屏幕提示执行，这套流程已稳定运行三年。然而，经理希望引入新系统：让系统自主判断——遇到条码污损包裹，先清洁再扫码；发现疑似易碎品，自动改走缓降滑道；还能根据实时车流调整分拣优先级。这引发了与传统自动化流程的本质差异思考：新系统需要具备哪些功能才能在企业场景中稳定工作？如何用指令让系统理解并执行经理的设想？"
+  },
+  "thinking": {
+    "guiding_problem1": "新系统与传统工作流的核心区别是什么？",
+    "guiding_problem2": "新系统需要具备哪些功能才能稳定工作？",
+    "guiding_problem3": "如何用你的话对系统下指令来实现经理的想法？"
+  },
+  "start": {
+    "task_num": "二",
+    "task_name": "提示词工程"
+  },
+  "catalog_one": {
+    "task_num": "二",
+    "task_name": "提示词工程"
+  },
+  "description": {
+    "task_description": "本章旨在帮助学员建立提示词工程的基础认知，理解提示词在智能体系统中的核心作用，掌握提示词工程的基本目标、基本原理和基本工作环境。",
+    "task_requirements1": "理解提示词在智能体系统中的核心作用；",
+    "task_requirements2": "掌握提示词工程的基本目标、基本原理和基本工作环境；",
+    "task_requirements3": "认识到提示词是对智能体行为的显式设计",
+    "task_requirements4": "能从系统设计视角理解提示词即行为设计",
+    "task_requirements5": "能围绕确定性、逻辑性、效率三个维度分析一个提示词是否优质；"
+  },
+  "catalog_two": {
+    "task_num": "二",
+    "task_name": "提示词工程"
+  },
+  "target": {
+    "task_target1": "从智能体系统设计视角理解提示词即行为设计",
+    "task_target2": "能围绕确定性、逻辑性、效率三个维度分析一个提示词是否优质；",
+    "task_target3": "能使用RAGFlow工作流开展提示词测试、记录和迭代优化；",
+    "task_target4": "能判断如何构建提示词，约束智能体输出符合场景需求",
+    "task_focus": "理解提示词如何影响智能体的决策过程与输出稳定性；",
+    "task_difficulty": "从文字生成过渡到提示词塑造模型行为的系统化认知"
+  },
+  "catalog_three": {
+    "task_num": "二",
+    "task_name": "提示词工程"
+  },
+  "catalog_four": {
+    "task_num": "二",
+    "task_name": "提示词工程"
+  },
+  "catalog_five": {
+    "task_num": "二",
+    "task_name": "提示词工程"
+  },
+  "summary": {
+    "task_summary": "在本任务中，解决的是提示词工程的认知起点问题。完成任务后，学员应当意识到：提示词并不是模型交互中的附属品，而是 Agent 行为设计的核心入口。它决定了模型如何理解任务、如何分配注意力、如何组织推理、如何控制输出。"
+  },
+  "key_difficulties_summary": {
+    "key_summary1": "提示词是智能体行为设计的核心入口；",
+    "key_summary2": "优质提示词兼顾确定性、逻辑性和效率；",
+    "key_summary3": "结构化提示词和版本管理保障可维护性；",
+    "difficulties_summary1": "理解提示词如何塑造模型行为而非简单提问；",
+    "difficulties_summary2": "概率机制理解提示词约束原理",
+    "difficulties_summary3": "提示词优化从玄学到科学迭代"
+  },
+  "catalog_six": {
+    "task_num": "二",
+    "task_name": "提示词工程"
+  },
+  "expansion": {
+    "skill_practice": "为任务实施中的系统提示词添加few-shot提示，判断一下对回复结果有无影响，并总结原因。\n如果要为一个企业客服Agent写第一版系统提示词，你认为最不能缺少的三项约束是什么？尝试构架一个这样的Agent，对比其他同学的回复结果，看看谁的想法更好。",
+    "solving_ideas": "通过添加示例让模型模仿输出格式，提升稳定性；系统提示词需明确角色、流程规则和输出格式三项核心约束，确保行为可控。"
+  }
+}

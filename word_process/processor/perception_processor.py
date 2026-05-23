@@ -137,7 +137,7 @@ class PerceptionProcessor:
                         del current_h3["_body"]
                     result["chunks"].append(current_h3)
 
-                h3_title = stripped.lstrip('# ').strip()
+                h3_title = self._strip_heading_number(stripped.lstrip('# ').strip())
                 current_h3 = {
                     "id": f"h3_{len(result['chunks'])}",
                     "level": 3,
@@ -177,7 +177,7 @@ class PerceptionProcessor:
                     current_h3 = {
                         "id": f"h3_{len(result['chunks'])}",
                         "level": 3,
-                        "title": h4_title,
+                        "title": self._strip_heading_number(h4_title),
                         "content": "",
                         "children": []
                     }
@@ -248,6 +248,20 @@ class PerceptionProcessor:
         h4["code_blocks"] = list(code_blocks)
         h4["chart_refs"] = self._extract_chart_refs(content_text)
         content_lines.clear()
+
+    @staticmethod
+    def _strip_heading_number(title: str) -> str:
+        """去掉标题中的序号前缀，如 '一、智能体的概念' → '智能体的概念'"""
+        import re as _re
+        # 中文数字序号: 一、二、... 十、十一、
+        m = _re.match(r'^[一二三四五六七八九十]+、\s*', title)
+        if m:
+            return title[m.end():]
+        # 阿拉伯数字序号: 1. 1、
+        m = _re.match(r'^\d+[.、]\s*', title)
+        if m:
+            return title[m.end():]
+        return title
 
     def _extract_chart_refs(self, text: str) -> List[str]:
         return self.CHART_REF_PATTERN.findall(text)

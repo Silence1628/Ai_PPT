@@ -19,6 +19,13 @@ load_dotenv(PROJECT_ROOT / ".env")
 from base_ppt.renderer.renderer import PPTRenderer
 
 BASE_JSON_DIR = PROJECT_ROOT / "word_process" / "llm_output" / "base_json"
+# Support project subdirectories: try */ if flat is empty
+def _get_base_json_files():
+    files = sorted(BASE_JSON_DIR.glob("*.json"))
+    if not files:
+        for proj in sorted(BASE_JSON_DIR.glob("*/")):
+            files.extend(sorted(proj.glob("*.json")))
+    return files
 PPT_TEMPLATE = PROJECT_ROOT / "base_ppt" / "templates" / "template.pptx"
 PPT_SCHEMA = PROJECT_ROOT / "base_ppt" / "templates" / "template_schema.json"
 PPT_OUTPUT_DIR = PROJECT_ROOT / "base_ppt" / "base_output"
@@ -29,7 +36,7 @@ def run_test():
     print("JSON → PPT (Base PPT 测试)")
     print("=" * 70)
 
-    task_jsons = sorted(BASE_JSON_DIR.glob("*.json"))
+    task_jsons = _get_base_json_files()
     if not task_jsons:
         print(f"[ERROR] 未找到 JSON 文件: {BASE_JSON_DIR}")
         return

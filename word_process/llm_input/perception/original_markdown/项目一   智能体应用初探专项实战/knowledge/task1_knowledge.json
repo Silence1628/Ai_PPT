@@ -6,7 +6,7 @@
     {
       "id": "h3_0",
       "level": 3,
-      "title": "一、智能体的概念",
+      "title": "智能体的概念",
       "content": "",
       "children": [
         {
@@ -34,7 +34,7 @@
     {
       "id": "h3_1",
       "level": 3,
-      "title": "二、RAGFlow平台初识",
+      "title": "RAGFlow平台初识",
       "content": "RAGFlow是一个开源的大语言模型（LLM）应用开发平台，旨在简化和加速生成式AI应用的创建和部署，为开发者提供了一个用户友好的界面和一系列强大的工具，通过可视化编排、模块化设计和丰富的功能组件，使他们能够快速搭建多种类生产级的AI应用。",
       "children": [
         {
@@ -98,7 +98,7 @@
     {
       "id": "h3_2",
       "level": 3,
-      "title": "三、RAGFlow搭建简易工作流",
+      "title": "RAGFlow搭建简易工作流",
       "content": "",
       "children": [
         {

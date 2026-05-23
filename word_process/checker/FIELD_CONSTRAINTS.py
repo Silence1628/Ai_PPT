@@ -7,7 +7,7 @@
 # min_len 默认为 1，max_len 与 base_prompts.py SYSTEM_PROMPT 一致
 FIELD_CONSTRAINTS = {
     # introduction
-    ("introduction", "introduction_case"): (1, 190),   # summary, max_length=190
+    ("introduction", "introduction_case"): (1, 220),   # raw_copy, max_length=220
     # thinking (guiding_problems)
     ("thinking", "guiding_problem1"): (1, 30),          # summary, max_length=30
     ("thinking", "guiding_problem2"): (1, 30),          # summary, max_length=30

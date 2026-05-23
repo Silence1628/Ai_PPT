@@ -137,7 +137,7 @@ class IntegrateProcessor:
         print(f"  [DELETE] knowledge placeholder at slide {knowledge_placeholder_idx}")
 
         # 保存并关闭
-        presentation.Save()
+        presentation.SaveAs(str(output_file.absolute()))
         presentation.Close()
         print(f"  → {output_file.name}")
 
@@ -176,7 +176,7 @@ def main():
     PROJECT_ROOT = Path(__file__).parent.parent.resolve()
 
     BASE_PPT_DIR = PROJECT_ROOT / "base_ppt" / "base_output"
-    TEMP_DIR = PROJECT_ROOT / "final_ppt" / "temp"
+    TEMP_DIR = PROJECT_ROOT / "perception_ppt" / "perception_output"
     OUTPUT_DIR = PROJECT_ROOT / "output"
 
     processor = IntegrateProcessor(BASE_PPT_DIR, TEMP_DIR, OUTPUT_DIR)

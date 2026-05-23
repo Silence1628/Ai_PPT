@@ -253,8 +253,8 @@ if __name__ == "__main__":
     PROJECT_ROOT = PathLib(__file__).parent.parent.parent.resolve()
     sys.path.insert(0, str(PROJECT_ROOT))
 
-    TEMPLATE_DIR = PROJECT_ROOT / "final_ppt" / "content_process" / "template"
-    TEMP_OUTPUT_DIR = PROJECT_ROOT / "final_ppt" / "temp"
+    TEMPLATE_DIR = PROJECT_ROOT / "perception_ppt" / "content_process" / "template"
+    TEMP_OUTPUT_DIR = PROJECT_ROOT / "perception_ppt" / "perception_output"
     PADDING_BASE = PROJECT_ROOT / "word_process" / "llm_output" / "perception_json"
 
     processor = AssembleProcessor(TEMPLATE_DIR, TEMP_OUTPUT_DIR)

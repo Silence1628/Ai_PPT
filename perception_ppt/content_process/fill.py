@@ -211,7 +211,7 @@ class FillProcessor:
                 print(f"    [Fill] slide {slide_index} ({module_type}) content chunk {chunk_idx + 1}")
                 slide_index += 1
 
-        presentation.Save()
+        presentation.SaveAs(str(pptx_file.absolute()))
         presentation.Close()
         print(f"    → {pptx_file.name} filled")
         return pptx_file
@@ -276,7 +276,7 @@ if __name__ == "__main__":
     PROJECT_ROOT = PathLib(__file__).parent.parent.parent.resolve()
     sys.path.insert(0, str(PROJECT_ROOT))
 
-    TEMP_DIR = PROJECT_ROOT / "final_ppt" / "temp"
+    TEMP_DIR = PROJECT_ROOT / "perception_ppt" / "perception_output"
     PADDING_BASE = PROJECT_ROOT / "word_process" / "llm_output" / "perception_json"
 
     processor = FillProcessor(TEMP_DIR)

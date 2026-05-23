@@ -1,0 +1,74 @@
+{
+  "cover": {
+    "project_name": "智能体应用初探专项实战",
+    "task_num": "三",
+    "task_name": "工作流编排与对话状态管理"
+  },
+  "introduction": {
+    "introduction_case": "某物流分拣中心每天处理上万件包裹，从卸货到装车需经过扫码、称重、分拣、复核等固定步骤，操作员只需照屏幕提示执行，这套流程已稳定运行三年。然而，经理希望引入新系统：让系统自主判断——遇到条码污损包裹，先清洁再扫码；发现疑似易碎品，自动改走缓降滑道；还能根据实时车流调整分拣优先级。这引发了与传统自动化流程的本质差异思考：新系统需要具备哪些功能才能在企业场景中稳定工作？如何用指令让系统理解并执行经理的设想？"
+  },
+  "thinking": {
+    "guiding_problem1": "新系统与传统工作流的核心区别是什么？",
+    "guiding_problem2": "新系统需要具备哪些功能才能稳定工作？",
+    "guiding_problem3": "如何用你的话对系统下指令来实现经理的想法？"
+  },
+  "start": {
+    "task_num": "三",
+    "task_name": "工作流编排与对话状态管理"
+  },
+  "catalog_one": {
+    "task_num": "三",
+    "task_name": "工作流编排与对话状态管理"
+  },
+  "description": {
+    "task_description": "本章旨在帮助学员从“会写 Prompt”过渡到“会搭工作流”，理解工作流（Workflow ）与 对话流（Chatflow ）的核心差异，掌握节点组件的功能定位、变量传递方式、逻辑控制流以及多轮对话中的记忆与路由机制。通过本章学习，学员将认识到：Agent 并不是一个大 Prompt，而是由输入、推理、检索、控制、记忆、输出等多个组件协同构成的执行系统。",
+    "task_requirements1": "能够说清工作流中常见节点的作用、适用场景与配置要点；",
+    "task_requirements2": "理解变量传递机制，正确使用{{variable}}引用数据",
+    "task_requirements3": "区分Workflow与Chatflow，理解多轮对话机制",
+    "task_requirements4": "设计含意图识别、澄清补槽、记忆与条件路由的对话工作流",
+    "task_requirements5": "能够搭建基础的提示词实验环境，并具备提示词版本管理意识。"
+  },
+  "catalog_two": {
+    "task_num": "三",
+    "task_name": "工作流编排与对话状态管理"
+  },
+  "target": {
+    "task_target1": "从系统编排视角理解Agent，不视大模型为唯一能力中心",
+    "task_target2": "从节点职责、变量契约、控制逻辑三维度评估工作流设计",
+    "task_target3": "在Chatflow中配置记忆机制，实现意图路由与多轮澄清",
+    "task_target4": "",
+    "task_focus": "掌握节点编排、变量传递、控制流设计与对话状态管理的基本方法；",
+    "task_difficulty": "从提示词调优过渡到系统编排思维，理解要素联动"
+  },
+  "catalog_three": {
+    "task_num": "三",
+    "task_name": "工作流编排与对话状态管理"
+  },
+  "catalog_four": {
+    "task_num": "三",
+    "task_name": "工作流编排与对话状态管理"
+  },
+  "catalog_five": {
+    "task_num": "三",
+    "task_name": "工作流编排与对话状态管理"
+  },
+  "summary": {
+    "task_summary": "本任务的核心是帮助学员建立工作流思维：Agent 的稳定性，不只来自模型，也来自节点职责是否清晰、变量传递是否准确、控制流是否合理、记忆管理是否克制。本任务解决的问题是“Agent 如何在系统里按流程做”。"
+  },
+  "key_difficulties_summary": {
+    "key_summary1": "节点职责清晰是工作流稳定的基础；",
+    "key_summary2": "变量契约明确确保数据传递正确；",
+    "key_summary3": "控制逻辑稳定和记忆管理克制是关键；",
+    "difficulties_summary1": "从提示词调优思维过渡到系统编排思维；",
+    "difficulties_summary2": "理解Agent各要素的联动关系",
+    "difficulties_summary3": "区分Workflow与Chatflow"
+  },
+  "catalog_six": {
+    "task_num": "三",
+    "task_name": "工作流编排与对话状态管理"
+  },
+  "expansion": {
+    "skill_practice": "这个项目只靠一个大 Prompt 能不能完成？尝试一下构建。在这个案例中，哪些问题必须交给 LLM，哪些问题其实更适合交给规则和模板？这个案例还有哪些部分可以进一步优化？",
+    "solving_ideas": "首先分析任务环节，将意图识别、槽位提取、路由判断等交给LLM，将规则明确的逻辑分支、变量赋值、聚合等交给控制节点和代码节点，实现职责分离。优化可从记忆管理、异常处理、多轮补槽效率等角度切入。"
+  }
+}
