@@ -43,16 +43,20 @@ venv.bak/
 .DS_Store
 Thumbs.db
 
-# Project specific
-Word_Chunks/json_output/
-PPT_Framework/base_ppt/
-Word_Chunks/__pycache__/
-Word_Chunks/checker/__pycache__/
-Word_Chunks/processor/__pycache__/
-LLM/__pycache__/
-PPT_Framework/__pycache__/
-PPT_Framework/renderer/__pycache__/
-PPT_Framework/schemas/__pycache__/
+# Project specific - large output directories
+input/*
+!input/.gitkeep
+output/*
+!output/.gitkeep
+base_ppt/base_output/*
+!base_ppt/base_output/.gitkeep
+perception_ppt/perception_output/*
+!perception_ppt/perception_output/.gitkeep
+word_process/llm_output/base_json/*
+word_process/llm_output/perception_json/*
+word_process/llm_input/perception/markdown_cut/*
+word_process/llm_input/perception/original_markdown/*
+word_process/llm_input/perception/preprocessed/*
 
 # Claude Code
 .claude/

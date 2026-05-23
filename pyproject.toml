@@ -4,11 +4,11 @@ version = "0.1.0"
 description = "AI-driven education PPT generation pipeline"
 requires-python = ">=3.10"
 dependencies = [
-    "python-docx>=1.1.0",
     "python-dotenv>=1.0.0",
     "openai>=1.0.0",
     "pydantic>=2.0.0",
     "pywin32>=300.0",
+    "lxml>=5.0",
 ]
 
 [project.optional-dependencies]

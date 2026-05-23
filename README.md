@@ -1,169 +1,160 @@
 # Edu_Agent
 
-AI-driven education PPT generation pipeline.
+AI-driven education PPT generation pipeline. 从 Word 文档自动生成教学 PPT。
 
 ## 项目概述
 
-Edu_Agent 是一个从 Word 文档自动生成教学 PPT 的工具链。工作流程：
-
 ```
-Word 文档 → Word_Chunks → JSON → PPT_Framework → PPT 文件
+Word (.docx)
+  → word_process（chunker/processor）→ Markdown + JSON
+  → base_ppt（renderer）              → Base PPT（封面/目录/任务描述等）
+  → perception_ppt（assemble/fill）   → Temp PPT（知识储备+任务实施）
+  → integrate                         → 最终 PPT
 ```
 
 ## 目录结构
 
 ```
 Edu_Agent/
-├── run_pipeline.py              # 主入口（一键运行）
-├── pyproject.toml               # 项目依赖配置
-├── .env.example                 # 环境变量模板
-├── .env                         # API Key 配置（若上传不要提交 git）
-├── .gitignore                   # Git 忽略配置
+├── app.py                             # 主入口
+├── .env / .env.example                # LLM API Key 配置
+├── pyproject.toml
 │
-├── LLM/                         # LLM 调用层
-│   ├── __init__.py
-│   ├── client.py                 # MiniMax API 客户端
-│   └── schemas.py                # Pydantic 数据模型
+├── input/                             # Word .docx 源文件
+├── output/                            # 最终 PPT 输出
 │
-├── Word_Chunks/                 # Word 文档处理模块
-│   ├── __init__.py
-│   ├── chunker/                  # Word 切割功能
-│   │   ├── __init__.py
-│   │   └── chunker.py
-│   ├── processor/                # LLM 处理功能
-│   │   ├── __init__.py
-│   │   ├── processor.py
-│   │   └── prompts.py
-│   ├── checker/                  # 字数检查与修正
-│   │   ├── __init__.py
+├── prompts/                           # LLM Prompt 模板
+│   ├── extraction_prompt.py           # 提取共享素材
+│   ├── base_prompt.py                 # 生成 Base JSON
+│   ├── fix_prompt.py                  # 单字段校正
+│   ├── reconstruction_prompt.py       # LLM 语义重构段落
+│   └── compress_prompt.py             # 超长字段批量压缩
+│
+├── LLM/                               # LLM 调用层
+│   ├── client.py                      # MiniMax / DeepSeek 双厂商
+│   └── schemas.py                     # Pydantic 数据模型
+│
+├── word_process/                      # Word 处理管线
+│   ├── chunker/                       # .docx → .md 转换 + 切分 + 清洗
+│   │   ├── word_to_markdown.py
+│   │   ├── project_splitter.py
+│   │   ├── task_splitter.py
+│   │   └── markdown_cleaner.py
+│   ├── processor/                     # LLM 处理 + perception 管线
+│   │   ├── markdown_processor.py      # Base JSON 生成
+│   │   ├── prompts.py                 # Prompt 构建函数（导入自 prompts/）
+│   │   ├── perception_splitter.py     # perception 分割
+│   │   ├── perception_processor.py    # H3/H4 AST 解析
+│   │   ├── markdown_ast.py            # 扁平化 chunk
+│   │   └── perception_semantic_chunker.py  # LLM 语义重构
+│   ├── checker/                       # 字段字数校验+修正
 │   │   ├── validator.py
 │   │   ├── corrector.py
 │   │   └── FIELD_CONSTRAINTS.py
-│   └── json_output/              # JSON 输出目录
+│   ├── llm_input/perception/          # 中间数据
+│   └── llm_output/
+│       ├── base_json/{项目}/           # Base JSON
+│       └── perception_json/{项目}/     # Perception JSON（LLM 重构后）
 │
-├── PPT_Framework/               # PPT 生成模块
-│   ├── __init__.py
-│   ├── examples/                 # 示例数据
-│   ├── renderer/                 # PPT 渲染器
-│   ├── schemas/                  # PPT 数据模型
-│   └── templates/               # PPT 模板
+├── base_ppt/                          # Base PPT 渲染
+│   ├── renderer/renderer.py           # PPTRenderer（COM）
+│   ├── templates/                     # template.pptx + schema
+│   └── base_output/                   # 渲染后的 base PPTX
 │
-├── input/                       # Word 源文件目录
-└── PPT_Framework/base_ppt/     # base PPT 输出目录
+├── perception_ppt/                    # Perception PPT 组装
+│   ├── content_process/
+│   │   ├── assemble.py                # padding → temp PPTX
+│   │   ├── fill.py                    # 占位符填充
+│   │   └── template/                  # 单页模板
+│   │       ├── subcatelog/{2..6}/
+│   │       ├── knowledge/knowledge_single/
+│   │       └── task/implementation_single/
+│   └── perception_output/             # 组装后的 temp PPTX
+│
+└── scripts/                           # 独立脚本
+    ├── md_to_json.py                  # Markdown → Base JSON（含 LLM）
+    ├── json_to_ppt.py                 # JSON → Base PPTX
+    └── integrate.py                   # Temp PPT + Base PPT → 最终 PPT
 ```
 
 ## 快速开始
 
-### 1. 环境配置
+### 1. 配置
 
 ```bash
-# 克隆项目后，创建 .env 文件（从模板复制）
 cp .env.example .env
-
-# 编辑 .env，填入你的 MiniMax API Key
-# MiniMax Token Plan 使用 OPENAI_API_KEY 环境变量名
-
-# 安装依赖（推荐使用虚拟环境）
-python -m venv venv
-venv\Scripts\activate  # Windows
-# source venv/bin/activate  # Linux/Mac
-
-pip install -e .
-# 或直接安装依赖
-pip install python-docx python-dotenv openai pydantic pywin32
+# 编辑 .env：设置 LLM_PROVIDER=deepseek 和 DEEPSEEK_API_KEY=sk-xxx
 ```
 
-### 2. 准备 Word 文件
-
-将 `.docx` 文件放入 `input/` 目录，程序会自动识别。
-
-### 3. 运行
+### 2. 安装依赖
 
 ```bash
-# 完整流程（Word → JSON → PPT）
-python run_pipeline.py
-
-# 仅渲染（已有 JSON 文件时跳过 Word 处理）
-python run_pipeline.py --render-only
+pip install python-dotenv openai pydantic pywin32 lxml
 ```
 
-## 核心模块
+### 3. 放入 Word 文件
 
-### LLM
+将 `.docx` 放入 `input/` 目录。
 
-统一封装 MiniMax API（OpenAI SDK 兼容模式）。
+### 4. 运行
 
-**主要类**：`MiniMaxClient`
-
-```python
-from LLM.client import MiniMaxClient
-
-client = MiniMaxClient()
-response = client.chat([{"role": "user", "content": "Hello"}])
+```bash
+python app.py
 ```
 
-### Word_Chunks
+首次运行会调用 LLM（Base JSON + Perception Semantic Chunk），后续运行自动跳过 LLM 步骤使用已有输出。
 
-Word 文档切割 + LLM 处理，输出 JSON 文件。
+## Pipeline 步骤
 
-**处理流程**：
-1. `WordChunker` 按标题切割 Word 文档
-2. `WordChunkProcessor` 并行调用 LLM 生成 JSON
-3. `Checker` 检查并修正字数超长字段（精确字段替换）
+| Step | 说明 | LLM / Prompt |
+|------|------|-------------|
+| 0 | Word → Markdown | - |
+| 1 | 第一次数据清洗 | - |
+| 2 | 第一次切分（项目 → task） | - |
+| 3 | 第二次数据清洗 | - |
+| 4 | 第二次切分（task → base + perception） | - |
+| 5 | Base JSON 生成 | `extraction_prompt` + `base_prompt` |
+| 6 | 渲染 Base PPT | - |
+| 7 | Perception 流水线（分割/AST/扁平化） | - |
+| 8 | Semantic Chunk（LLM 理解+重构段落） | `reconstruction_prompt` |
+| 9 | Assemble + Fill（temp PPTX） | - |
+| 10 | Integrate（合并为最终 PPT） | - |
+| checker | 字段校验+修正 | `fix_prompt` + `compress_prompt` |
 
-**Token Plan 注意**：
-- Starter 套餐：600 次请求/5 小时
-- Plus：1500 次/5 小时
-- Max：4500 次/5 小时
+## LLM 配置
 
-### PPT_Framework
+支持 MiniMax 和 DeepSeek，通过 `.env` 切换：
 
-接收 JSON 数据，渲染生成 PPT 文件。
+```bash
+LLM_PROVIDER=deepseek          # 或 minimax
+DEEPSEEK_API_KEY=sk-xxx        # DeepSeek
+OPENAI_API_KEY=sk-xxx          # MiniMax
+```
 
-**主要类**：`PPTRenderer`
+## Prompt 管理
 
-```python
-from PPT_Framework.renderer import PPTRenderer
+所有 LLM Prompt 集中在 [`prompts/`](prompts/) 目录，按功能命名：
 
-renderer = PPTRenderer(
-    template_path="templates/template.pptx",
-    schema_path="templates/template_schema.json"
-)
-renderer.render(data, "output.pptx")
+| 文件 | 用途 |
+|------|------|
+| `extraction_prompt.py` | 从项目介绍提取共享素材（项目名+引导案例+思考问题） |
+| `base_prompt.py` | 从任务章节生成完整 Base JSON（15 个 section） |
+| `fix_prompt.py` | 单字段字数校正（压缩/扩充） |
+| `reconstruction_prompt.py` | 理解教材内容后重构为 ~300 字 PPT 段落 |
+| `compress_prompt.py` | 同一 section 多字段批量压缩 |
+
+## LLM 配置
+
+支持 MiniMax 和 DeepSeek，通过 `.env` 切换：
+
+```bash
+LLM_PROVIDER=deepseek          # 或 minimax
+DEEPSEEK_API_KEY=sk-xxx        # DeepSeek
+OPENAI_API_KEY=sk-xxx          # MiniMax
 ```
 
 ## 环境要求
 
 - Python >= 3.10
-- MiniMax Token Plan API Key
-- Windows（PPT_Framework 使用 win32com COM 自动化）
-- WPS 或 Microsoft PowerPoint
-
-## 依赖
-
-| 包 | 版本 | 用途 |
-|----|------|------|
-| python-docx | >=1.1.0 | Word 文档读取 |
-| python-dotenv | >=1.0.0 | 环境变量加载 |
-| openai | >=1.0.0 | MiniMax API 调用 |
-| pydantic | >=2.0.0 | 数据验证 |
-| pywin32 | >=300.0 | Windows COM 自动化（PPT 渲染） |
-
-## 部署检查清单
-
-- [ ] Python >= 3.10 已安装
-- [ ] 虚拟环境已创建并激活
-- [ ] `.env` 文件已创建，填入有效的 `OPENAI_API_KEY`
-- [ ] Word 文件已放入 `input/` 目录
-- [ ] WPS 或 PowerPoint 已安装（用于 PPT 渲染）
-
-## 常见问题
-
-**Q: 运行报错 "找不到 Word 文件"**
-A: 确保 `input/` 目录中有 `.docx` 或 `.doc` 文件，且只有一个
-
-**Q: Checker 阶段报错 "LLM 输出无法解析"**
-A: LLM 返回格式可能异常，程序会自动保留原字段继续执行
-
-**Q: PPT 渲染失败**
-A: 确保已安装 WPS 或 PowerPoint，且模板文件 `template.pptx` 存在
+- Windows + PowerPoint（用于 PPT COM 渲染）
+- DeepSeek 或 MiniMax API Key
