@@ -209,48 +209,54 @@ def step8_semantic_chunk():
 
 
 # =============================================================================
-# Step 9: Assemble（生成 temp PPTX）
+# Step 9: Assemble + Fill（单 PPT 实例处理全部项目，避免反复开关）
 # =============================================================================
-def step9_assemble():
-    """读取 perception_json → 生成 temp PPTX"""
+def step9_assemble_and_fill():
+    """读取 perception_json → 生成 temp PPTX → 填充占位符（一个 PPT 实例）"""
     print("\n" + "=" * 70)
-    print("[Step 9] Assemble: perception_json → temp PPTX")
+    print("[Step 9] Assemble + Fill: perception_json → temp PPTX → 填充")
     print("=" * 70)
 
+    import time
     import win32com.client
     import pythoncom
-    from collections import OrderedDict
     from perception_ppt.content_process.assemble import AssembleProcessor
+    from perception_ppt.content_process.fill import FillProcessor
 
     template_dir = PROJECT_ROOT / "perception_ppt" / "content_process" / "template"
     temp_dir = PROJECT_ROOT / "perception_ppt" / "perception_output"
     padding_base = PROJECT_ROOT / "word_process" / "llm_output" / "perception_json"
 
-    processor = AssembleProcessor(template_dir, temp_dir)
+    assembler = AssembleProcessor(template_dir, temp_dir)
+    filler = FillProcessor(temp_dir)
 
-    project_dirs = sorted([d for d in padding_base.iterdir() if d.is_dir() and d.name.startswith('项目')])
-    for project_dir in project_dirs:
-        knowledge_dir = project_dir / "knowledge"
-        task_dir = project_dir / "task"
-        if not knowledge_dir.exists():
-            continue
-
-        k_files = sorted(knowledge_dir.glob("task*_knowledge.json"))
-        print(f"\n  [Project] {project_dir.name} ({len(k_files)} tasks)")
-
-        # 单 PPT 实例处理本项目所有 task
-        pythoncom.CoInitialize()
+    pythoncom.CoInitialize()
+    try:
+        ppt = win32com.client.GetActiveObject("PowerPoint.Application")
+    except Exception:
         try:
             ppt = win32com.client.Dispatch("PowerPoint.Application")
         except Exception:
             ppt = win32com.client.Dispatch("WPP.Application")
-        ppt.Visible = -1
-        try:
-            ppt.DisplayAlerts = 0
-        except Exception:
-            pass
 
-        try:
+    ppt.Visible = -1
+    try:
+        ppt.DisplayAlerts = 0
+    except Exception:
+        pass
+
+    try:
+        project_dirs = sorted([d for d in padding_base.iterdir()
+                               if d.is_dir() and d.name.startswith('项目')])
+        for project_dir in project_dirs:
+            knowledge_dir = project_dir / "knowledge"
+            task_dir = project_dir / "task"
+            if not knowledge_dir.exists():
+                continue
+
+            k_files = sorted(knowledge_dir.glob("task*_knowledge.json"))
+            print(f"\n  [Project] {project_dir.name} ({len(k_files)} tasks)")
+
             for kf in k_files:
                 tn = kf.stem.replace("_knowledge", "")
                 tf = task_dir / f"{tn}_implementation.json"
@@ -260,84 +266,26 @@ def step9_assemble():
 
                 kd = json.loads(kf.read_text(encoding='utf-8'))
                 td = json.loads(tf.read_text(encoding='utf-8'))
-                processor.task_num = kd.get("task_num", "")
+                assembler.task_num = kd.get("task_num", "")
 
                 ks = AssembleProcessor.padding_to_section(kd.get("chunks", []), "knowledge")
                 ts = AssembleProcessor.padding_to_section(td.get("chunks", []), "task")
 
-                kr = processor._build_temp_pptx(ppt, ks, temp_dir / "knowledge", "knowledge")
-                tr = processor._build_temp_pptx(ppt, ts, temp_dir / "task", "task")
-                print(f"    [{tn}] k={kr.name if kr else 'SKIP'}  impl={tr.name if tr else 'SKIP'}")
-        finally:
-            try:
-                ppt.Quit()
-            except Exception:
-                pass
-            pythoncom.CoUninitialize()
+                kr = assembler._build_temp_pptx(ppt, ks, temp_dir / "knowledge", "knowledge")
+                tr = assembler._build_temp_pptx(ppt, ts, temp_dir / "task", "task")
 
-
-# =============================================================================
-# Step 10: Fill（填充占位符）
-# =============================================================================
-def step10_fill():
-    """填充 temp PPTX 占位符"""
-    print("\n" + "=" * 70)
-    print("[Step 10] Fill: 填充占位符")
-    print("=" * 70)
-
-    import win32com.client
-    import pythoncom
-    from perception_ppt.content_process.fill import FillProcessor
-
-    temp_dir = PROJECT_ROOT / "perception_ppt" / "perception_output"
-    padding_base = PROJECT_ROOT / "word_process" / "llm_output" / "perception_json"
-
-    filler = FillProcessor(temp_dir)
-
-    project_dirs = sorted([d for d in padding_base.iterdir() if d.is_dir() and d.name.startswith('项目')])
-    for project_dir in project_dirs:
-        knowledge_dir = project_dir / "knowledge"
-        task_dir = project_dir / "task"
-        if not knowledge_dir.exists():
-            continue
-
-        k_files = sorted(knowledge_dir.glob("task*_knowledge.json"))
-        print(f"\n  [Project] {project_dir.name} ({len(k_files)} tasks)")
-
-        pythoncom.CoInitialize()
+                filler._fill_pptx(ppt, ks, kd.get("task_num", ""),
+                                  "knowledge", "03", "知识储备")
+                filler._fill_pptx(ppt, ts, kd.get("task_num", ""),
+                                  "task", "04", "任务实施")
+                print(f"    [{tn}] assembled + filled")
+    finally:
+        time.sleep(0.5)
         try:
-            ppt = win32com.client.Dispatch("PowerPoint.Application")
-        except Exception:
-            ppt = win32com.client.Dispatch("WPP.Application")
-        ppt.Visible = -1
-        try:
-            ppt.DisplayAlerts = 0
+            ppt.Quit()
         except Exception:
             pass
-
-        try:
-            for kf in k_files:
-                tn = kf.stem.replace("_knowledge", "")
-                tf = task_dir / f"{tn}_implementation.json"
-                if not tf.exists():
-                    continue
-
-                kd = json.loads(kf.read_text(encoding='utf-8'))
-                td = json.loads(tf.read_text(encoding='utf-8'))
-                task_num = kd.get("task_num", "")
-
-                ks = FillProcessor.padding_to_section(kd.get("chunks", []), "knowledge")
-                ts = FillProcessor.padding_to_section(td.get("chunks", []), "task")
-
-                filler._fill_pptx(ppt, ks, task_num, "knowledge", "03", "知识储备")
-                filler._fill_pptx(ppt, ts, task_num, "task", "04", "任务实施")
-                print(f"    [{tn}] filled")
-        finally:
-            try:
-                ppt.Quit()
-            except Exception:
-                pass
-            pythoncom.CoUninitialize()
+        pythoncom.CoUninitialize()
 
 
 # =============================================================================
@@ -377,8 +325,7 @@ def main():
         ("渲染 Base PPT",             step6_render_base_ppt),
         ("Perception 流水线",          step7_perception_pipeline),
         ("Semantic Chunk（跳过LLM）",  step8_semantic_chunk),
-        ("Assemble：temp PPTX",       step9_assemble),
-        ("Fill：填充占位符",           step10_fill),
+        ("Assemble + Fill",           step9_assemble_and_fill),
         ("Integrate：输出最终 PPT",    step11_integrate),
     ]
 
